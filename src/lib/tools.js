@@ -31,6 +31,17 @@ export const TOOLS = [
     tags: ["GeoIP", "ASN", "ISP"],
   },
   {
+    id: "proxy-viewer",
+    name: "Proxy Viewer",
+    label: "Proxy Viewer",
+    desc: "Preview websites on specific server IPs or staging hostnames before changing public DNS records.",
+    icon: Shield,
+    href: "/tools/proxy-viewer",
+    live: true,
+    featured: true,
+    tags: ["DNS Preview", "VirtualHost", "Staging", "Migration"],
+  },
+  {
     id: "license-check",
     name: "License Checker",
     label: "License Check",

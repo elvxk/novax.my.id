@@ -530,6 +530,44 @@ export default function ApiDocsPage() {
 }`}
         />
 
+        {/* Endpoint 5: Proxy Viewer (Pre-DNS Preview) */}
+        <EndpointCard
+          method="GET"
+          path="/api/proxy-viewer?domain=example.com&target=192.0.2.1"
+          title="VirtualHost Proxy & Pre-DNS Preview"
+          desc="Generates pre-DNS preview endpoints and audits target server reachability via rover.novax.my.id without modifying client hosts files."
+          params={[
+            {
+              name: "domain",
+              type: "string",
+              required: true,
+              desc: "Target domain name configured as the virtual host (e.g. example.com).",
+            },
+            {
+              name: "target",
+              type: "string",
+              required: true,
+              desc: "Target server IP address or staging hostname (e.g. 192.0.2.1 or server.staging.com).",
+            },
+          ]}
+          curlExample="curl -s 'https://novax.my.id/api/proxy-viewer?domain=example.com&target=192.0.2.1'"
+          jsonResponse={`{
+  "success": true,
+  "data": {
+    "domain": "example.com",
+    "target": "192.0.2.1",
+    "previewUrl": "https://rover.novax.my.id/192.0.2.1/example.com",
+    "publicDnsIps": [
+      "104.20.23.154",
+      "172.66.147.243"
+    ],
+    "isAlreadyLive": false,
+    "status": 200,
+    "responseTimeMs": 142
+  }
+}`}
+        />
+
       </div>
 
       <Footer />

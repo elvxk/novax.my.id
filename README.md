@@ -9,6 +9,7 @@ Built with **Next.js 16 (Turbopack)**, **Tailwind CSS v4**, **Framer Motion**, a
 ## ⚡ Features & Tools
 
 - **DNS Lookup (`/tools/dns-lookup`)**: Authoritative DNS resolution for A, AAAA, MX, NS, TXT, CNAME, and SOA records via Google DoH.
+- **Proxy Viewer (`/tools/proxy-viewer`)**: Preview and test virtual hosts on specific server IPs or hostnames before changing public DNS records.
 - **IP Geolocation (`/tools/ip-geo`)**: Geographic location coordinates, interactive OpenStreetMap Leaflet visualization, ASN, and ISP routing data.
 - **License Checker (`/tools/license-check`)**: Multi-registry verification of cPanel/WHM, CloudLinux OS, Imunify360, and JetBackup registrations.
 - **Reverse DNS (PTR)**: Automatic IPv4 extraction from A/TXT records and reverse in-addr.arpa lookup.
@@ -312,6 +313,41 @@ curl -s "https://novax.my.id/api/license-check?ip=8.8.8.8"
 
 ---
 
+#### 5. VirtualHost Proxy & Pre-DNS Preview
+Generates pre-DNS preview endpoints and audits target server reachability via rover.novax.my.id without modifying client hosts files.
+
+- **Method**: `GET`
+- **Path**: `/api/proxy-viewer`
+- **Parameters**:
+  - `domain` *(string, required)*: Virtual host domain name (e.g. `example.com`).
+  - `target` *(string, required)*: Target server IP or hostname (e.g. `192.0.2.1` or `server.staging.com`).
+
+**Example Request:**
+```bash
+curl -s "https://novax.my.id/api/proxy-viewer?domain=example.com&target=192.0.2.1"
+```
+
+**Example Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "domain": "example.com",
+    "target": "192.0.2.1",
+    "previewUrl": "https://rover.novax.my.id/192.0.2.1/example.com",
+    "publicDnsIps": [
+      "104.20.23.154",
+      "172.66.147.243"
+    ],
+    "isAlreadyLive": false,
+    "status": 200,
+    "responseTimeMs": 142
+  }
+}
+```
+
+---
+
 ## ⚙️ Configuration (.env)
 
 | Variable | Default | Description |
@@ -321,6 +357,7 @@ curl -s "https://novax.my.id/api/license-check?ip=8.8.8.8"
 | `IP_API_URL` | `https://ipwho.is` | Upstream IP Geolocation provider endpoint |
 | `VERIFY_CPANEL_URL` | `https://verify.cpanel.net/app/verify` | Upstream cPanel verification endpoint |
 | `CLN_URL` | `https://cln.cloudlinux.com/wapi/check/ip` | Upstream CloudLinux registry endpoint |
+| `PREVIEW_SERVICE_URL` | `https://rover.novax.my.id` | PreviewProxy backend service URL |
 | `RATE_LIMIT_MAX` | `60` | Max requests allowed per rate limit window |
 | `RATE_LIMIT_WINDOW_SECONDS` | `60` | Duration of rate limit window in seconds |
 
