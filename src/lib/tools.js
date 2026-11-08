@@ -1,0 +1,46 @@
+import {
+  Globe,
+  MapPin,
+  Shield,
+  Key,
+  Search,
+  Wifi,
+} from "lucide-react";
+
+export const TOOLS = [
+  {
+    id: "dns-lookup",
+    name: "DNS Lookup",
+    label: "DNS Lookup",
+    desc: "Inspect DNS records (A, AAAA, MX, NS, TXT, CNAME, SOA), reverse DNS PTR, and domain registration WHOIS / RDAP.",
+    icon: Globe,
+    href: "/tools/dns-lookup",
+    live: true,
+    featured: true,
+    tags: ["DNS", "WHOIS", "RDAP", "PTR"],
+  },
+  {
+    id: "ip-geo",
+    name: "IP Geolocation",
+    label: "IP Geolocation",
+    desc: "Lookup country, city, ASN, ISP details, and geographic coordinates for any IPv4 or IPv6 address.",
+    icon: MapPin,
+    href: "/tools/ip-geo",
+    live: true,
+    featured: true,
+    tags: ["GeoIP", "ASN", "ISP"],
+  },
+  {
+    id: "license-check",
+    name: "License Checker",
+    label: "License Check",
+    desc: "Verify cPanel, CloudLinux, Imunify, and JetBackup license registrations from any IP address.",
+    icon: Key,
+    href: "/tools/license-check",
+    live: true,
+    featured: false,
+    tags: ["cPanel", "CloudLinux", "Imunify", "JetBackup"],
+  },
+];
+
+export const FEATURED_TOOLS = TOOLS.filter((t) => t.featured);
