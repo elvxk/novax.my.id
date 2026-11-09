@@ -5,6 +5,7 @@ import {
   Key,
   Search,
   Wifi,
+  Mail,
 } from "lucide-react";
 
 export const TOOLS = [
@@ -51,6 +52,17 @@ export const TOOLS = [
     live: true,
     featured: false,
     tags: ["cPanel", "CloudLinux", "Imunify", "JetBackup"],
+  },
+  {
+    id: "smtp-sender",
+    name: "SMTP Sender",
+    label: "SMTP Sender",
+    desc: "Verify outbound email delivery through any SMTP server with custom credentials and encryption settings.",
+    icon: Mail,
+    href: "/tools/smtp-sender",
+    live: true,
+    featured: true,
+    tags: ["SMTP", "Email", "Deliverability", "SSL", "TLS"],
   },
 ];
 
