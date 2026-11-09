@@ -84,13 +84,14 @@ export function checkRateLimit(ip = "127.0.0.1") {
  * Extracts real client IP address from standard proxy headers
  */
 export function getClientIp(request) {
+  // cf-connecting-ip is the real client IP when behind Cloudflare proxy
+  const cfConnectingIp = request.headers.get("cf-connecting-ip");
+  if (cfConnectingIp) return cfConnectingIp.trim();
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) {
     return forwarded.split(",")[0].trim();
   }
   const realIp = request.headers.get("x-real-ip");
   if (realIp) return realIp.trim();
-  const cfConnectingIp = request.headers.get("cf-connecting-ip");
-  if (cfConnectingIp) return cfConnectingIp.trim();
   return "127.0.0.1";
 }
