@@ -31,9 +31,9 @@ export default function NotFound() {
             404
           </h1>
 
-          {/* Spanish epigraph */}
-          <p className="text-sm font-semibold text-ink/45 tracking-wide mb-2 italic">
-            «Nada fue encontrado aquí»
+          {/* Diagnostic epigraph */}
+          <p className="text-sm font-semibold text-ink/45 tracking-wide mb-2 font-mono">
+            // 404_TARGET_UNREACHABLE
           </p>
 
           {/* Headline */}

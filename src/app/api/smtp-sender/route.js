@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer";
 import { apiSuccess, apiError } from "@/lib/api-response";
-import { getClientIp, checkRateLimit } from "@/lib/rate-limit";
 
 export async function OPTIONS() {
   return new Response(null, {
@@ -14,12 +13,6 @@ export async function OPTIONS() {
 }
 
 export async function POST(request) {
-  const ip = getClientIp(request);
-  const rl = checkRateLimit(`smtp:${ip}`);
-  if (!rl.allowed) {
-    return apiError("Rate limit exceeded. Please wait before retrying.", 429, "RATE_LIMITED");
-  }
-
   let body;
   try {
     body = await request.json();
@@ -65,7 +58,7 @@ export async function POST(request) {
     await transporter.verify();
 
     const mailOptions = {
-      from: `"Nova-X Tools" <${user}>`,
+      from: user,
       to,
       subject: subject || "SMTP Delivery Verification",
       ...(format === "html"

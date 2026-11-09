@@ -2,16 +2,23 @@ import { NextResponse } from "next/server";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export function proxy(request) {
-  // Pass through preflight OPTIONS requests without consuming rate limit
+  // Handle CORS preflight OPTIONS requests without consuming rate limit
   if (request.method === "OPTIONS") {
-    return NextResponse.next();
+    return new NextResponse(null, {
+      status: 204,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
+    });
   }
 
   const ip = getClientIp(request);
   const rate = checkRateLimit(ip);
   const windowSec = parseInt(process.env.RATE_LIMIT_WINDOW_SECONDS || "60", 10);
 
-  // Common international rate limit headers
+  // Common international rate limit & CORS headers
   const rateLimitHeaders = {
     // IETF draft-ietf-httpapi-ratelimit-headers
     "RateLimit-Limit": rate.limit.toString(),
@@ -24,6 +31,8 @@ export function proxy(request) {
     "X-RateLimit-Reset": rate.resetTimestamp.toString(),
     // Standard CORS
     "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
   };
 
   if (!rate.allowed) {
