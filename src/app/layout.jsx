@@ -12,7 +12,7 @@ export const metadata = {
   metadataBase: new URL("https://novax.my.id"),
   openGraph: {
     title: "Nova-X",
-    description: "DNS lookup, IP geolocation, proxy detection, and more. Network tools, no sign-up required.",
+    description: "Una fuente única para todas las herramientas.",
     url: "https://novax.my.id",
     siteName: "Nova-X",
     locale: "en_US",
