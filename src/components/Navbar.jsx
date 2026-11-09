@@ -19,8 +19,8 @@ export default function Navbar({ maxWidth = "max-w-6xl" }) {
               aria-hidden="true"
             >
               <rect width="100" height="100" rx="22" fill="#10380b" />
-              <line x1="26" y1="26" x2="74" y2="74" stroke="#30be60" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="4 4" />
-              <line x1="74" y1="26" x2="26" y2="74" stroke="#30be60" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="4 4" />
+              <line x1="26" y1="26" x2="74" y2="74" stroke="#30be60" strokeWidth="4.5" strokeLinecap="round" strokeDasharray="4 4" />
+              <line x1="74" y1="26" x2="26" y2="74" stroke="#30be60" strokeWidth="4.5" strokeLinecap="round" strokeDasharray="4 4" />
               <path d="M50 18 C50 36 36 50 18 50 C36 50 50 64 50 82 C50 64 64 50 82 50 C64 50 50 36 50 18 Z" fill="#fce519" />
               <circle cx="50" cy="50" r="5" fill="#10380b" />
               <circle cx="50" cy="50" r="2" fill="#ffffff" />
