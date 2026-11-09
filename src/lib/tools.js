@@ -3,8 +3,6 @@ import {
   MapPin,
   Shield,
   Key,
-  Search,
-  Wifi,
   Mail,
 } from "lucide-react";
 
@@ -50,7 +48,7 @@ export const TOOLS = [
     icon: Key,
     href: "/tools/license-check",
     live: true,
-    featured: false,
+    featured: true,
     tags: ["cPanel", "CloudLinux", "Imunify", "JetBackup"],
   },
   {

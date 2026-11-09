@@ -6,17 +6,44 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata = {
-  title: "Nova-X",
+  title: {
+    default: "Nova-X — Network & Security Diagnostics",
+    template: "%s · Nova-X",
+  },
   description:
-    "DNS lookup, IP geolocation, proxy detection, license checks and more. Network tools for developers and sysadmins. No sign-up required.",
+    "Authoritative DNS resolution, IP geolocation, proxy pre-DNS preview, server license verification, and SMTP diagnostics. Fast, open, and CORS-enabled.",
   metadataBase: new URL("https://novax.my.id"),
+  keywords: [
+    "DNS lookup",
+    "reverse DNS",
+    "IP geolocation",
+    "proxy viewer",
+    "cPanel license check",
+    "CloudLinux check",
+    "SMTP sender test",
+    "RDAP WHOIS",
+    "sysadmin tools",
+  ],
+  authors: [{ name: "Nova-X", url: "https://novax.my.id" }],
+  creator: "Nova-X",
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
-    title: "Nova-X",
-    description: "Una fuente única para todas las herramientas.",
+    title: "Nova-X — Network & Security Diagnostics",
+    description:
+      "Open network diagnostics and server utilities for developers and sysadmins. Fast, privacy-first, and CORS-enabled.",
     url: "https://novax.my.id",
     siteName: "Nova-X",
     locale: "en_US",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Nova-X — Network & Security Diagnostics",
+    description:
+      "Open network diagnostics and server utilities for developers and sysadmins.",
   },
 };
 

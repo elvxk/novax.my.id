@@ -3,6 +3,14 @@ import { getClientIp } from "@/lib/rate-limit";
 
 const IP_API_BASE = process.env.IP_API_URL || "https://ipwho.is";
 
+function isPrivateOrLocal(ip) {
+  if (!ip || ip === "127.0.0.1" || ip === "::1") return true;
+  if (ip.startsWith("10.") || ip.startsWith("192.168.")) return true;
+  if (/^172\.(1[6-9]|2\d|3[0-1])\./.test(ip)) return true;
+  if (ip.startsWith("169.254.") || ip.startsWith("100.64.")) return true;
+  return false;
+}
+
 export async function OPTIONS() {
   return new Response(null, {
     status: 204,
@@ -21,8 +29,8 @@ export async function GET(request) {
   // If no IP supplied, detect caller's client IP
   if (!targetIp) {
     const callerIp = getClientIp(request);
-    // If local/private, let upstream service resolve its own public IP
-    if (callerIp && callerIp !== "127.0.0.1" && callerIp !== "::1") {
+    // Only pass targetIp if public; private/local resolves upstream directly
+    if (callerIp && !isPrivateOrLocal(callerIp)) {
       targetIp = callerIp;
     }
   }
