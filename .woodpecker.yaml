@@ -1,0 +1,59 @@
+when:
+  - event: push
+    branch: main
+
+steps:
+  - name: deploy
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: vps_host
+      username:
+        from_secret: vps_user
+      key:
+        from_secret: vps_ssh_key
+      port:
+        from_secret: vps_port
+      command_timeout: 15m
+      script_stop: true
+      envs:
+        - ENV_FILE
+        - PROJECT_NAME
+        - PORT
+        - REPO_URL
+        - DEPLOY_PATH
+      script:
+        - export PATH=/root/.bun/bin:$PATH
+        - export PATH=/root/.nvm/versions/node/v22.18.0/bin:$PATH
+
+        - mkdir -p "$DEPLOY_PATH"
+        - cd "$DEPLOY_PATH"
+
+        - |
+          if [ ! -d "$PROJECT_NAME/.git" ]; then
+            git clone $REPO_URL $PROJECT_NAME
+          fi
+
+        - cd "$DEPLOY_PATH/$PROJECT_NAME"
+        - git fetch origin
+        - git reset --hard origin/main
+        - git clean -fd
+
+        # Buat file env dari secret
+        - printf "%s" "$ENV_FILE" > .env
+
+        - bun install
+        - bunx prisma generate
+        - bun run build
+
+        # Restart pm2
+        - pm2 reload "$PORT-$PROJECT_NAME" || pm2 start bun --name "$PORT-$PROJECT_NAME" -- run next start -p $PORT
+        - pm2 save
+    environment:
+      REPO_URL: git@github.com:elvxk/novax.my.id.git
+      PROJECT_NAME: novax.my.id
+      PORT: "2016"
+      ENV_FILE:
+        from_secret: env_file
+      DEPLOY_PATH:
+        from_secret: deploy_path
