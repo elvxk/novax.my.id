@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Search } from "lucide-react";
+import Logo from "@/components/Logo";
 
 export default function Navbar({ maxWidth = "max-w-6xl" }) {
   return (
@@ -9,24 +10,15 @@ export default function Navbar({ maxWidth = "max-w-6xl" }) {
       <nav className={`${maxWidth} mx-auto flex items-center justify-between gap-4`}>
 
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center group-hover:translate-x-[-1px] group-hover:translate-y-[-1px] group-hover:shadow-novax transition-all duration-150 overflow-hidden shrink-0">
-            <svg
-              viewBox="0 0 100 100"
-              className="w-full h-full"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <rect width="100" height="100" rx="22" fill="#10380b" />
-              <line x1="26" y1="26" x2="74" y2="74" stroke="#30be60" strokeWidth="4.5" strokeLinecap="round" strokeDasharray="4 4" />
-              <line x1="74" y1="26" x2="26" y2="74" stroke="#30be60" strokeWidth="4.5" strokeLinecap="round" strokeDasharray="4 4" />
-              <path d="M50 18 C50 36 36 50 18 50 C36 50 50 64 50 82 C50 64 64 50 82 50 C64 50 50 36 50 18 Z" fill="#fce519" />
-              <circle cx="50" cy="50" r="5" fill="#10380b" />
-              <circle cx="50" cy="50" r="2" fill="#ffffff" />
-            </svg>
-          </div>
-          <span className="text-ink font-extrabold text-base tracking-tight">Nova-X</span>
+        <Link
+          href="/"
+          className="group shrink-0 hover:translate-x-[-1px] hover:translate-y-[-1px] transition-transform duration-150"
+        >
+          <Logo
+            size={32}
+            withText
+            iconClassName="group-hover:shadow-novax transition-all duration-150"
+          />
         </Link>
 
         {/* Right cluster: subtle search icon, links & CTA */}
