@@ -33,7 +33,7 @@ export default function NotFound() {
 
           {/* Diagnostic epigraph */}
           <p className="text-sm font-semibold text-ink/45 tracking-wide mb-2 font-mono">
-            // 404_TARGET_UNREACHABLE
+            {"// 404_TARGET_UNREACHABLE"}
           </p>
 
           {/* Headline */}
