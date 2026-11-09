@@ -37,8 +37,9 @@ export default function Map({ lat, lon, label }) {
             <!-- Inner Circle in Vivid Marigold Yellow -->
             <circle cx="19" cy="16" r="9" fill="#fce519" stroke="#10380b" stroke-width="1.2" />
 
-            <!-- Nova-X Brand Zap Logo in Forest Ink -->
-            <path d="M20 10.5L15 17H19L18 21.5L23 15H19L20 10.5Z" fill="#10380b" stroke="#10380b" stroke-width="0.5" stroke-linejoin="round" />
+            <!-- Nova-X Brand Astrolabe Star in Forest Ink -->
+            <path d="M19 10.5 C19 14 16.5 16 13.5 16 C16.5 16 19 18 19 21.5 C19 18 21.5 16 24.5 16 C21.5 16 19 14 19 10.5 Z" fill="#10380b" />
+            <circle cx="19" cy="16" r="1.5" fill="#fce519" />
           </svg>
         </div>
       `,

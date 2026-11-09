@@ -40,7 +40,7 @@ export const TOOLS = [
     href: "/tools/proxy-viewer",
     live: true,
     featured: true,
-    tags: ["DNS Preview", "VirtualHost", "Staging", "Migration"],
+    tags: ["DNS Preview", "VirtualHost", "Manual Resolver", "Resolver"],
   },
   {
     id: "license-check",

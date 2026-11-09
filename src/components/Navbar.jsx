@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Zap, Search } from "lucide-react";
+import { Search } from "lucide-react";
+import Logo from "@/components/Logo";
 
 export default function Navbar({ maxWidth = "max-w-6xl" }) {
   return (
@@ -9,11 +10,15 @@ export default function Navbar({ maxWidth = "max-w-6xl" }) {
       <nav className={`${maxWidth} mx-auto flex items-center justify-between gap-4`}>
 
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group shrink-0">
-          <div className="w-8 h-8 bg-ink rounded-lg flex items-center justify-center group-hover:translate-x-[-1px] group-hover:translate-y-[-1px] group-hover:shadow-novax transition-all duration-150">
-            <Zap size={15} className="text-marigold" fill="#fce519" />
-          </div>
-          <span className="text-ink font-extrabold text-base tracking-tight">Nova-X</span>
+        <Link
+          href="/"
+          className="group shrink-0 hover:translate-x-[-1px] hover:translate-y-[-1px] transition-transform duration-150"
+        >
+          <Logo
+            size={32}
+            withText
+            iconClassName="group-hover:shadow-novax transition-all duration-150"
+          />
         </Link>
 
         {/* Right cluster: subtle search icon, links & CTA */}
