@@ -14,6 +14,8 @@ import {
   Key,
   Mail,
   Eye,
+  Lock,
+  Network,
   Menu,
   X,
 } from "lucide-react";
@@ -27,6 +29,8 @@ import IpGeo from "./_components/endpoints/IpGeo";
 import LicenseCheck from "./_components/endpoints/LicenseCheck";
 import SmtpSender from "./_components/endpoints/SmtpSender";
 import ProxyViewer from "./_components/endpoints/ProxyViewer";
+import SslChecker from "./_components/endpoints/SslChecker";
+import SubdomainFinder from "./_components/endpoints/SubdomainFinder";
 
 // ── sidebar config ────────────────────────────────────────────────────────────
 
@@ -41,12 +45,14 @@ const NAV = [
   {
     label: "Endpoints",
     items: [
-      { id: "dns-lookup",     title: "DNS Lookup",         icon: Globe,  method: "GET"  },
-      { id: "whois",          title: "WHOIS / RDAP",       icon: Globe,  method: "GET"  },
-      { id: "ip-geo",         title: "IP Geolocation",     icon: MapPin, method: "GET"  },
-      { id: "license-check",  title: "License Check",      icon: Key,    method: "GET"  },
-      { id: "smtp-sender",    title: "SMTP Sender",        icon: Mail,   method: "POST" },
-      { id: "proxy-viewer",   title: "Proxy Viewer",       icon: Eye,    method: "GET"  },
+      { id: "dns-lookup",       title: "DNS Lookup",         icon: Globe,   method: "GET"  },
+      { id: "whois",            title: "WHOIS / RDAP",       icon: Globe,   method: "GET"  },
+      { id: "ip-geo",           title: "IP Geolocation",     icon: MapPin,  method: "GET"  },
+      { id: "license-check",    title: "License Check",      icon: Key,     method: "GET"  },
+      { id: "smtp-sender",      title: "SMTP Sender",        icon: Mail,    method: "POST" },
+      { id: "proxy-viewer",     title: "Proxy Viewer",       icon: Eye,     method: "GET"  },
+      { id: "ssl-checker",      title: "SSL Checker",        icon: Lock,    method: "GET"  },
+      { id: "subdomain-finder", title: "Subdomain Finder",   icon: Network, method: "GET"  },
     ],
   },
 ];
@@ -209,12 +215,14 @@ export default function ApiDocsPage() {
               <h2 className="text-2xl font-black text-ink tracking-tight">Available Endpoints</h2>
             </div>
 
-            <DnsLookup    open={openId === "dns-lookup"}    onToggle={(v) => handleEndpointToggle("dns-lookup", v)} />
-            <Whois        open={openId === "whois"}         onToggle={(v) => handleEndpointToggle("whois", v)} />
-            <IpGeo        open={openId === "ip-geo"}        onToggle={(v) => handleEndpointToggle("ip-geo", v)} />
-            <LicenseCheck open={openId === "license-check"} onToggle={(v) => handleEndpointToggle("license-check", v)} />
-            <SmtpSender   open={openId === "smtp-sender"}   onToggle={(v) => handleEndpointToggle("smtp-sender", v)} />
-            <ProxyViewer  open={openId === "proxy-viewer"}  onToggle={(v) => handleEndpointToggle("proxy-viewer", v)} />
+            <DnsLookup       open={openId === "dns-lookup"}       onToggle={(v) => handleEndpointToggle("dns-lookup", v)} />
+            <Whois           open={openId === "whois"}            onToggle={(v) => handleEndpointToggle("whois", v)} />
+            <IpGeo           open={openId === "ip-geo"}           onToggle={(v) => handleEndpointToggle("ip-geo", v)} />
+            <LicenseCheck    open={openId === "license-check"}    onToggle={(v) => handleEndpointToggle("license-check", v)} />
+            <SmtpSender      open={openId === "smtp-sender"}      onToggle={(v) => handleEndpointToggle("smtp-sender", v)} />
+            <ProxyViewer     open={openId === "proxy-viewer"}     onToggle={(v) => handleEndpointToggle("proxy-viewer", v)} />
+            <SslChecker      open={openId === "ssl-checker"}      onToggle={(v) => handleEndpointToggle("ssl-checker", v)} />
+            <SubdomainFinder open={openId === "subdomain-finder"} onToggle={(v) => handleEndpointToggle("subdomain-finder", v)} />
           </div>
         </div>
       </div>
