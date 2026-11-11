@@ -5,6 +5,7 @@ import {
   Key,
   Mail,
   Lock,
+  Network,
 } from "lucide-react";
 
 export const TOOLS = [
@@ -39,7 +40,7 @@ export const TOOLS = [
     href: "/tools/proxy-viewer",
     live: true,
     featured: true,
-    tags: ["DNS Preview", "VirtualHost", "Manual Resolver", "Resolver"],
+    tags: ["DNS Preview", "Manual Resolver", "Resolver"],
   },
   {
     id: "license-check",
@@ -73,6 +74,17 @@ export const TOOLS = [
     live: true,
     featured: true,
     tags: ["SSL", "TLS", "Certificate", "HTTPS"],
+  },
+  {
+    id: "subdomain-finder",
+    name: "Subdomain Finder",
+    label: "Subdomain Finder",
+    desc: "Enumerate subdomains of any root domain via DNS brute-force against a common wordlist.",
+    icon: Network,
+    href: "/tools/subdomain-finder",
+    live: true,
+    featured: true,
+    tags: ["DNS", "Subdomain", "Enumeration", "Recon"],
   },
 ];
 
