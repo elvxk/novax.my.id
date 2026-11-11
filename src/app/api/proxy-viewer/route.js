@@ -7,12 +7,14 @@ const PREVIEW_BASE =
 const DOH_BASE = process.env.DOH_BASE_URL || "https://dns.google/resolve";
 
 function cleanInput(val) {
-  if (!val) return "";
-  let s = val.trim().toLowerCase();
+  if (!val) return { host: "", path: "" };
+  let s = val.trim();
   s = s.replace(/^https?:\/\//i, "");
-  s = s.replace(/\/.*$/, "");
-  s = s.replace(/:\d+$/, "");
-  return s;
+  const slashIdx = s.indexOf("/");
+  const path = slashIdx !== -1 ? s.slice(slashIdx) : "";
+  let host = (slashIdx !== -1 ? s.slice(0, slashIdx) : s).toLowerCase();
+  host = host.replace(/:\d+$/, "");
+  return { host, path };
 }
 
 async function getPublicDnsIps(domain) {
@@ -66,10 +68,10 @@ export async function GET(request) {
   const rawDomain = searchParams.get("domain");
   const rawTarget = searchParams.get("target") || searchParams.get("server");
 
-  const domain = cleanInput(rawDomain);
-  const target = cleanInput(rawTarget);
+  const { host: domain, path: domainPath } = cleanInput(rawDomain);
+  const { host: target } = cleanInput(rawTarget);
 
-  if (!domain || !/^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z]{2,})+$/.test(domain)) {
+  if (!domain || !/^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/.test(domain)) {
     return apiError(
       "A valid domain name is required (e.g. ?domain=example.com)",
       400,
@@ -85,7 +87,7 @@ export async function GET(request) {
     );
   }
 
-  const previewUrl = `${PREVIEW_BASE}/${encodeURIComponent(target)}/${encodeURIComponent(domain)}`;
+  const previewUrl = `${PREVIEW_BASE}/${encodeURIComponent(target)}/${encodeURIComponent(domain)}${domainPath}`;
 
   try {
     const startTime = performance.now();
