@@ -1,8 +1,73 @@
 import { NextResponse } from "next/server";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { getToolByPath } from "@/lib/tool-registry";
 
 export function proxy(request) {
-  // Handle CORS preflight OPTIONS requests without consuming rate limit
+  const { pathname } = request.nextUrl;
+  const isApi = pathname.startsWith("/api/");
+  const isToolPage = pathname.startsWith("/tools/") && pathname !== "/tools";
+
+  // ── Centralized Tool Status Guard ──────────────────────────────────────────
+  if (isApi || isToolPage) {
+    const tool = getToolByPath(pathname);
+    if (tool) {
+      // 1. Tool completely disabled -> 404 Not Found
+      if (tool.disabled) {
+        if (isApi) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: {
+                code: "NOT_FOUND",
+                message: "The requested endpoint was not found or is disabled.",
+              },
+            },
+            {
+              status: 404,
+              headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json",
+              },
+            }
+          );
+        }
+        return NextResponse.rewrite(new URL("/not-found", request.url));
+      }
+
+      // 2. Tool offline / maintenance (live === false) -> 503 Service Unavailable
+      if (!tool.live) {
+        if (isApi) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: {
+                code: "SERVICE_UNAVAILABLE",
+                message: `${tool.name} is temporarily offline for maintenance.`,
+              },
+            },
+            {
+              status: 503,
+              headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json",
+              },
+            }
+          );
+        }
+        // Redirect browser to tools catalog with notice
+        return NextResponse.redirect(
+          new URL(`/tools?maintenance=${tool.id}`, request.url)
+        );
+      }
+    }
+  }
+
+  // Non-API routes pass through without rate limiting
+  if (!isApi) {
+    return NextResponse.next();
+  }
+
+  // ── Handle CORS preflight OPTIONS requests without consuming rate limit ──
   if (request.method === "OPTIONS") {
     return new NextResponse(null, {
       status: 204,
@@ -14,6 +79,7 @@ export function proxy(request) {
     });
   }
 
+  // ── Rate Limiter ───────────────────────────────────────────────────────────
   const ip = getClientIp(request);
   const rate = checkRateLimit(ip);
   const windowSec = parseInt(process.env.RATE_LIMIT_WINDOW_SECONDS || "60", 10);
@@ -63,5 +129,5 @@ export function proxy(request) {
 }
 
 export const config = {
-  matcher: ["/api/:path*"],
+  matcher: ["/api/:path*", "/tools/:path*"],
 };

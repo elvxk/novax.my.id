@@ -21,7 +21,8 @@ export default function EndpointCard({
   params,
   curlExample,
   jsonResponse,
-  badge = "Live",
+  badge,
+  live = true,
   jsExample: jsExampleProp,
   // controlled open
   open: openProp,
@@ -29,10 +30,13 @@ export default function EndpointCard({
 }) {
   const [localOpen, setLocalOpen] = useState(false);
   const open = openProp !== undefined ? openProp : localOpen;
-  function setOpen(v) {
-    if (onToggle) onToggle(v);
-    else setLocalOpen(v);
+
+  function handleToggle() {
+    const next = !open;
+    if (onToggle) onToggle(next);
+    else setLocalOpen(next);
   }
+
   const [tab, setTab] = useState("curl");
 
   const jsExample =
@@ -45,7 +49,8 @@ console.log(data);`;
     <div id={id} className="rounded-2xl border border-ink bg-parchment shadow-[4px_4px_0px_0px_#10380b] mb-5 overflow-hidden scroll-mt-32">
       {/* Accordion header — always visible */}
       <button
-        onClick={() => setOpen((v) => !v)}
+        type="button"
+        onClick={handleToggle}
         className="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-cream/40 transition-colors"
       >
         <span
@@ -56,9 +61,15 @@ console.log(data);`;
           {method}
         </span>
         <code className="flex-1 text-sm font-mono font-bold text-ink truncate">{path}</code>
-        <span className="hidden sm:inline text-[11px] font-black bg-marigold text-ink px-3 py-0.5 rounded-full border border-ink/20 shadow-[2px_2px_0px_0px_#10380b] shrink-0">
-          {badge}
-        </span>
+        {live ? (
+          <span className="hidden sm:inline text-[10px] font-black bg-fern/20 text-ink px-2.5 py-0.5 rounded-full border border-fern/40 shadow-[2px_2px_0px_0px_#10380b] shrink-0 uppercase tracking-wider">
+            {badge || "Live"}
+          </span>
+        ) : (
+          <span className="hidden sm:inline text-[10px] font-black bg-marigold/30 text-amber-900 px-2.5 py-0.5 rounded-full border border-ink/20 shrink-0 uppercase tracking-wider">
+            {badge || "Maintenance"}
+          </span>
+        )}
         <ChevronDown
           size={16}
           className={`shrink-0 text-ink/50 transition-transform duration-200 ${open ? "rotate-180" : ""}`}

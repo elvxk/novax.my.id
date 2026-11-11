@@ -1,11 +1,12 @@
 import EndpointCard from "../EndpointCard";
 
-export default function DnsLookup({ open, onToggle }) {
+export default function DnsLookup({ open, onToggle, ...props }) {
   return (
     <EndpointCard
       id="dns-lookup"
       open={open}
       onToggle={onToggle}
+      {...props}
       method="GET"
       path="/api/dns-lookup?domain=example.com"
       title="DNS Lookup & Reverse DNS"

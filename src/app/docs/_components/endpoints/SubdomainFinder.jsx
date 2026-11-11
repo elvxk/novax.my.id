@@ -1,11 +1,12 @@
 import EndpointCard from "../EndpointCard";
 
-export default function SubdomainFinder({ open, onToggle }) {
+export default function SubdomainFinder({ open, onToggle, ...props }) {
   return (
     <EndpointCard
       id="subdomain-finder"
       open={open}
       onToggle={onToggle}
+      {...props}
       method="GET"
       path="/api/subdomain-finder?domain=example.com&mode=hybrid&check_ssl=true"
       title="Subdomain Reconnaissance & SSL Audit"

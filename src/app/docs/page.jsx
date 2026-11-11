@@ -16,6 +16,7 @@ import {
   Eye,
   Lock,
   Network,
+  AlertTriangle,
   Menu,
   X,
 } from "lucide-react";
@@ -31,8 +32,46 @@ import SmtpSender from "./_components/endpoints/SmtpSender";
 import ProxyViewer from "./_components/endpoints/ProxyViewer";
 import SslChecker from "./_components/endpoints/SslChecker";
 import SubdomainFinder from "./_components/endpoints/SubdomainFinder";
+import { TOOL_DEFINITIONS } from "@/lib/tool-registry";
 
 // ── sidebar config ────────────────────────────────────────────────────────────
+
+const RAW_ENDPOINTS = [
+  { id: "dns-lookup",       title: "DNS Lookup",         icon: Globe,   method: "GET",  toolId: "dns-lookup" },
+  { id: "whois",            title: "WHOIS / RDAP",       icon: Globe,   method: "GET",  toolId: "dns-lookup" },
+  { id: "ip-geo",           title: "IP Geolocation",     icon: MapPin,  method: "GET",  toolId: "ip-geo" },
+  { id: "license-check",    title: "License Check",      icon: Key,     method: "GET",  toolId: "license-check" },
+  { id: "smtp-sender",      title: "SMTP Sender",        icon: Mail,    method: "POST", toolId: "smtp-sender" },
+  { id: "proxy-viewer",     title: "Proxy Viewer",       icon: Eye,     method: "GET",  toolId: "proxy-viewer" },
+  { id: "ssl-checker",      title: "SSL Checker",        icon: Lock,    method: "GET",  toolId: "ssl-checker" },
+  { id: "subdomain-finder", title: "Subdomain Finder",   icon: Network, method: "GET",  toolId: "subdomain-finder" },
+];
+
+const ENDPOINT_COMPONENTS = {
+  "dns-lookup": DnsLookup,
+  "whois": Whois,
+  "ip-geo": IpGeo,
+  "license-check": LicenseCheck,
+  "smtp-sender": SmtpSender,
+  "proxy-viewer": ProxyViewer,
+  "ssl-checker": SslChecker,
+  "subdomain-finder": SubdomainFinder,
+};
+
+// Filter out disabled endpoints and attach live status
+const VISIBLE_ENDPOINTS = RAW_ENDPOINTS.filter((ep) => {
+  const tool = TOOL_DEFINITIONS.find((t) => t.id === ep.toolId);
+  return !tool || !tool.disabled;
+}).map((ep) => {
+  const tool = TOOL_DEFINITIONS.find((t) => t.id === ep.toolId);
+  return {
+    ...ep,
+    live: tool ? tool.live : true,
+  };
+});
+
+const LIVE_ENDPOINTS = VISIBLE_ENDPOINTS.filter((ep) => ep.live);
+const MAINTENANCE_ENDPOINTS = VISIBLE_ENDPOINTS.filter((ep) => !ep.live);
 
 const NAV = [
   {
@@ -44,17 +83,16 @@ const NAV = [
   },
   {
     label: "Endpoints",
-    items: [
-      { id: "dns-lookup",       title: "DNS Lookup",         icon: Globe,   method: "GET"  },
-      { id: "whois",            title: "WHOIS / RDAP",       icon: Globe,   method: "GET"  },
-      { id: "ip-geo",           title: "IP Geolocation",     icon: MapPin,  method: "GET"  },
-      { id: "license-check",    title: "License Check",      icon: Key,     method: "GET"  },
-      { id: "smtp-sender",      title: "SMTP Sender",        icon: Mail,    method: "POST" },
-      { id: "proxy-viewer",     title: "Proxy Viewer",       icon: Eye,     method: "GET"  },
-      { id: "ssl-checker",      title: "SSL Checker",        icon: Lock,    method: "GET"  },
-      { id: "subdomain-finder", title: "Subdomain Finder",   icon: Network, method: "GET"  },
-    ],
+    items: LIVE_ENDPOINTS,
   },
+  ...(MAINTENANCE_ENDPOINTS.length > 0
+    ? [
+        {
+          label: "Maintenance",
+          items: MAINTENANCE_ENDPOINTS,
+        },
+      ]
+    : []),
 ];
 
 const METHOD_BADGE = {
@@ -77,7 +115,7 @@ function Sidebar({ activeId, onSelect }) {
             {group.label}
           </p>
           <ul className="space-y-0.5">
-            {group.items.map(({ id, title, icon: Icon, method }) => (
+            {group.items.map(({ id, title, icon: Icon, method, live }) => (
               <li key={id}>
                 <button
                   onClick={() => { scrollTo(id); onSelect(id); }}
@@ -89,7 +127,11 @@ function Sidebar({ activeId, onSelect }) {
                 >
                   <Icon size={13} className="shrink-0" />
                   <span className="flex-1 truncate">{title}</span>
-                  {method && (
+                  {live === false ? (
+                    <span className="text-[9px] font-black px-1.5 py-0.5 rounded border tracking-wider bg-amber-100 text-amber-800 border-amber-300">
+                      MAINTENANCE
+                    </span>
+                  ) : method ? (
                     <span
                       className={`text-[9px] font-black px-1.5 py-0.5 rounded border tracking-wider ${
                         activeId === id
@@ -99,7 +141,7 @@ function Sidebar({ activeId, onSelect }) {
                     >
                       {method}
                     </span>
-                  )}
+                  ) : null}
                 </button>
               </li>
             ))}
@@ -121,13 +163,19 @@ export default function ApiDocsPage() {
     setActiveId(id);
     setMobileNavOpen(false);
     // only toggle endpoints (not overview sections)
-    const isEndpoint = NAV[1].items.some((i) => i.id === id);
+    const isEndpoint = NAV.some(
+      (g) => g.label !== "Overview" && g.items.some((i) => i.id === id)
+    );
     if (isEndpoint) setOpenId((prev) => (prev === id ? null : id));
   }
 
   function handleEndpointToggle(id, v) {
-    setOpenId(v ? id : null);
-    if (v) setActiveId(id);
+    if (typeof v === "boolean") {
+      setOpenId(v ? id : null);
+      if (v) setActiveId(id);
+    } else {
+      setOpenId((prev) => (prev === id ? null : id));
+    }
   }
 
   return (
@@ -209,20 +257,60 @@ export default function ApiDocsPage() {
               <RateLimitSection />
             </section>
 
-            {/* Endpoints */}
-            <div className="mb-6 flex items-center gap-2">
-              <Terminal size={18} className="text-ink" />
-              <h2 className="text-2xl font-black text-ink tracking-tight">Available Endpoints</h2>
-            </div>
+            {/* Live Endpoints */}
+            {LIVE_ENDPOINTS.length > 0 && (
+              <section className="mb-12">
+                <div className="mb-6 flex items-center gap-2">
+                  <Terminal size={18} className="text-ink" />
+                  <h2 className="text-2xl font-black text-ink tracking-tight">Available Endpoints</h2>
+                </div>
 
-            <DnsLookup       open={openId === "dns-lookup"}       onToggle={(v) => handleEndpointToggle("dns-lookup", v)} />
-            <Whois           open={openId === "whois"}            onToggle={(v) => handleEndpointToggle("whois", v)} />
-            <IpGeo           open={openId === "ip-geo"}           onToggle={(v) => handleEndpointToggle("ip-geo", v)} />
-            <LicenseCheck    open={openId === "license-check"}    onToggle={(v) => handleEndpointToggle("license-check", v)} />
-            <SmtpSender      open={openId === "smtp-sender"}      onToggle={(v) => handleEndpointToggle("smtp-sender", v)} />
-            <ProxyViewer     open={openId === "proxy-viewer"}     onToggle={(v) => handleEndpointToggle("proxy-viewer", v)} />
-            <SslChecker      open={openId === "ssl-checker"}      onToggle={(v) => handleEndpointToggle("ssl-checker", v)} />
-            <SubdomainFinder open={openId === "subdomain-finder"} onToggle={(v) => handleEndpointToggle("subdomain-finder", v)} />
+                {LIVE_ENDPOINTS.map((ep) => {
+                  const Comp = ENDPOINT_COMPONENTS[ep.id];
+                  if (!Comp) return null;
+                  return (
+                    <Comp
+                      key={ep.id}
+                      open={openId === ep.id}
+                      onToggle={(v) => handleEndpointToggle(ep.id, v)}
+                      live={true}
+                    />
+                  );
+                })}
+              </section>
+            )}
+
+            {/* Maintenance Endpoints */}
+            {MAINTENANCE_ENDPOINTS.length > 0 && (
+              <section id="maintenance-endpoints" className="mb-10">
+                <div className="mb-4 flex items-center gap-2">
+                  <AlertTriangle size={18} className="text-ink" />
+                  <h2 className="text-2xl font-black text-ink tracking-tight">Under Maintenance</h2>
+                </div>
+
+                {/* Single global notice banner for all maintenance endpoints */}
+                <div className="mb-6 bg-marigold/20 border border-ink text-ink rounded-2xl p-4 flex items-start gap-3 shadow-[4px_4px_0px_0px_#10380b]">
+                  <AlertTriangle size={18} className="text-ink shrink-0 mt-0.5" />
+                  <div className="text-xs font-semibold leading-relaxed">
+                    <strong className="block text-sm font-bold mb-0.5">Endpoints Temporarily Offline</strong>
+                    This endpoint is temporarily offline for maintenance. API requests currently return HTTP 503.
+                  </div>
+                </div>
+
+                {MAINTENANCE_ENDPOINTS.map((ep) => {
+                  const Comp = ENDPOINT_COMPONENTS[ep.id];
+                  if (!Comp) return null;
+                  return (
+                    <Comp
+                      key={ep.id}
+                      open={openId === ep.id}
+                      onToggle={(v) => handleEndpointToggle(ep.id, v)}
+                      live={false}
+                    />
+                  );
+                })}
+              </section>
+            )}
           </div>
         </div>
       </div>
