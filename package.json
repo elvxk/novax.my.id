@@ -6,15 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "postinstall": "prisma generate",
-    "prisma:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:seed": "bun run prisma/seed.js"
+    "lint": "eslint"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
-    "@prisma/client": "^6",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.2",
     "framer-motion": "^14.10.1",
@@ -32,7 +27,6 @@
     "@tailwindcss/turbopack": "^4",
     "eslint": "^9",
     "eslint-config-next": "16.4.5",
-    "prisma": "^6",
     "tailwindcss": "^4"
   },
   "packageManager": "bun@1.4.4",

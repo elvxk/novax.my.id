@@ -14,33 +14,15 @@ import {
   Home,
   Layers,
 } from "lucide-react";
-import { TOOLS, ICON_MAP } from "@/lib/tools";
+import { TOOLS } from "@/lib/tools";
 
 export default function CommandPalette() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [toolsList, setToolsList] = useState(TOOLS);
   const inputRef = useRef(null);
   const listRef = useRef(null);
-
-  // Sync with PostgreSQL database
-  useEffect(() => {
-    fetch("/api/tools")
-      .then((r) => r.json())
-      .then((json) => {
-        if (json.success && Array.isArray(json.data)) {
-          setToolsList(
-            json.data.map((t) => ({
-              ...t,
-              icon: ICON_MAP[t.iconName] || Globe,
-            }))
-          );
-        }
-      })
-      .catch(() => {});
-  }, []);
 
   // Global key listener for Ctrl+K, Cmd+K, and custom open event
   useEffect(() => {
@@ -84,7 +66,7 @@ export default function CommandPalette() {
 
   // Navigation shortcuts list + tools
   const allItems = [
-    ...toolsList.map((t) => ({
+    ...TOOLS.map((t) => ({
       id: `tool-${t.id}`,
       title: t.name,
       desc: t.desc,

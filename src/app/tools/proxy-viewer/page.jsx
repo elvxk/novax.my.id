@@ -168,7 +168,7 @@ function ProxyViewerInner() {
                   id="domain"
                   value={domain}
                   onChange={(e) => setDomain(e.target.value)}
-                  placeholder="example.com or example.com/path"
+                  placeholder="example.com or ecample.com/path"
                   disabled={loading}
                   required
                   className="w-full bg-cream border border-ink/20 rounded-xl px-4 py-2.5 font-mono font-semibold text-sm text-ink placeholder:text-ink/30 outline-none focus:border-ink focus:shadow-[3px_3px_0px_0px_#10380b] transition-all disabled:opacity-50"
@@ -191,7 +191,7 @@ function ProxyViewerInner() {
                   id="target"
                   value={target}
                   onChange={(e) => setTarget(e.target.value)}
-                  placeholder="192.0.2.1 or staging.example.com"
+                  placeholder="192.0.2.1 or server.staging.com"
                   disabled={loading}
                   required
                   className="w-full bg-cream border border-ink/20 rounded-xl px-4 py-2.5 font-mono font-semibold text-sm text-ink placeholder:text-ink/30 outline-none focus:border-ink focus:shadow-[3px_3px_0px_0px_#10380b] transition-all disabled:opacity-50"

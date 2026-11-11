@@ -163,7 +163,7 @@ export default function SmtpSenderPage() {
                 <Field label="Hostname">
                   <Input
                     type="text"
-                    placeholder="smtp.example.com"
+                    placeholder="smtp.domain.com"
                     value={form.host}
                     onChange={set("host")}
                     required
@@ -234,7 +234,7 @@ export default function SmtpSenderPage() {
                 <Field label="Sender Email">
                   <Input
                     type="email"
-                    placeholder="sender@example.com"
+                    placeholder="sender@domain.com"
                     value={form.user}
                     onChange={set("user")}
                     required
@@ -279,7 +279,7 @@ export default function SmtpSenderPage() {
                 <Field label="Target Email">
                   <Input
                     type="email"
-                    placeholder="recipient@example.com"
+                    placeholder="recipient@domain.com"
                     value={form.to}
                     onChange={set("to")}
                     required
