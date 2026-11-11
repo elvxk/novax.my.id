@@ -1,15 +1,54 @@
 import { NextResponse } from "next/server";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
-import { getToolByPath } from "@/lib/tool-registry";
+import { getToolStatusByPath, getDatabaseHealth } from "@/lib/tools-db";
 
-export function proxy(request) {
+export async function proxy(request) {
   const { pathname } = request.nextUrl;
   const isApi = pathname.startsWith("/api/");
-  const isToolPage = pathname.startsWith("/tools/") && pathname !== "/tools";
+  const isMaintenancePage = pathname === "/maintenance";
+
+  // ── Database Health Check Guard ────────────────────────────────────────────
+  const isDbUp = await getDatabaseHealth();
+
+  // If system is online and user attempts to access /maintenance directly, redirect to home
+  if (isDbUp && isMaintenancePage) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  // If database is offline
+  if (!isDbUp) {
+    if (isMaintenancePage) {
+      return NextResponse.next();
+    }
+
+    if (isApi) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "SERVICE_UNAVAILABLE",
+            message: "The platform is temporarily under maintenance. Please try again shortly.",
+          },
+        },
+        {
+          status: 503,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
+            "Retry-After": "30",
+          },
+        }
+      );
+    }
+
+    // Redirect browser requests to the dedicated /maintenance page
+    return NextResponse.redirect(new URL("/maintenance", request.url));
+  }
 
   // ── Centralized Tool Status Guard ──────────────────────────────────────────
+  const isToolPage = pathname.startsWith("/tools/") && pathname !== "/tools";
   if (isApi || isToolPage) {
-    const tool = getToolByPath(pathname);
+    const tool = await getToolStatusByPath(pathname);
     if (tool) {
       // 1. Tool completely disabled -> 404 Not Found
       if (tool.disabled) {
@@ -129,5 +168,5 @@ export function proxy(request) {
 }
 
 export const config = {
-  matcher: ["/api/:path*", "/tools/:path*"],
+  matcher: ["/", "/tools/:path*", "/docs/:path*", "/api/:path*", "/maintenance"],
 };
