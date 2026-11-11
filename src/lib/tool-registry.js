@@ -29,7 +29,7 @@ export const TOOL_DEFINITIONS = [
     iconName: "MapPin",
     href: "/tools/ip-geo",
     apiEndpoints: ["/api/ip-geo"],
-    live: false,
+    live: true,
     disabled: false,
     featured: true,
     tags: ["GeoIP", "ASN", "ISP"],
@@ -57,7 +57,7 @@ export const TOOL_DEFINITIONS = [
     apiEndpoints: ["/api/license-check"],
     live: true,
     disabled: false,
-    featured: true,
+    featured: false,
     tags: ["cPanel", "CloudLinux", "Imunify", "JetBackup"],
   },
   {
@@ -81,9 +81,9 @@ export const TOOL_DEFINITIONS = [
     iconName: "Lock",
     href: "/tools/ssl-checker",
     apiEndpoints: ["/api/ssl-checker"],
-    live: false,
+    live: true,
     disabled: false,
-    featured: true,
+    featured: false,
     tags: ["SSL", "TLS", "Certificate", "HTTPS"],
   },
   {
@@ -96,7 +96,7 @@ export const TOOL_DEFINITIONS = [
     apiEndpoints: ["/api/subdomain-finder"],
     live: true,
     disabled: false,
-    featured: true,
+    featured: false,
     tags: ["DNS", "Subdomain", "Enumeration", "Recon"],
   },
 ];
