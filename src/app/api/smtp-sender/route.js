@@ -1,6 +1,18 @@
 import nodemailer from "nodemailer";
 import { apiSuccess, apiError } from "@/lib/api-response";
 
+function isForbiddenHost(host) {
+  if (!host) return true;
+  const h = host.trim().toLowerCase();
+  if (h === "localhost" || h === "127.0.0.1" || h === "::1" || h === "0.0.0.0") return true;
+  if (h.endsWith(".local") || h.endsWith(".internal") || h.endsWith(".arpa")) return true;
+  if (h.startsWith("10.") || h.startsWith("192.168.")) return true;
+  if (/^172\.(1[6-9]|2\d|3[0-1])\./.test(h)) return true;
+  if (h.startsWith("169.254.") || h.startsWith("100.64.")) return true;
+  if (/^(fc|fd)[0-9a-f]{2}:/i.test(h) || /^fe[89ab][0-9a-f]:/i.test(h)) return true;
+  return false;
+}
+
 export async function OPTIONS() {
   return new Response(null, {
     status: 204,
@@ -24,6 +36,14 @@ export async function POST(request) {
 
   if (!host || !port || !user || !pass || !to) {
     return apiError("Missing required fields: host, port, user, pass, to", 400, "MISSING_FIELDS");
+  }
+
+  if (isForbiddenHost(host)) {
+    return apiError(
+      "Connections to loopback, link-local, or private addresses are prohibited",
+      400,
+      "FORBIDDEN_HOST"
+    );
   }
 
   const portNum = parseInt(port, 10);

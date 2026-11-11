@@ -5,6 +5,12 @@ import CommandPalette from "@/components/CommandPalette";
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
+export const viewport = {
+  themeColor: "#fdf8ed",
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata = {
   title: {
     default: "Nova-X — Network & Security Diagnostics",
@@ -13,6 +19,9 @@ export const metadata = {
   description:
     "Authoritative DNS resolution, IP geolocation, proxy pre-DNS preview, server license verification, and SMTP diagnostics. Fast, open, and CORS-enabled.",
   metadataBase: new URL("https://novax.my.id"),
+  alternates: {
+    canonical: "/",
+  },
   keywords: [
     "DNS lookup",
     "reverse DNS",
