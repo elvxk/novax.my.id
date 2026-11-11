@@ -1,11 +1,12 @@
 import EndpointCard from "../EndpointCard";
 
-export default function SslChecker({ open, onToggle }) {
+export default function SslChecker({ open, onToggle, ...props }) {
   return (
     <EndpointCard
       id="ssl-checker"
       open={open}
       onToggle={onToggle}
+      {...props}
       method="GET"
       path="/api/ssl-checker?domain=example.com"
       title="SSL / TLS Certificate Validation"

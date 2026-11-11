@@ -242,7 +242,7 @@ export default function CommandPalette() {
                               </span>
                             ) : (
                               <span className="text-[9px] font-bold uppercase tracking-wider bg-ink/10 text-ink/50 px-1.5 py-0.2 rounded flex items-center gap-0.5">
-                                <Lock size={8} /> Soon
+                                <Lock size={8} /> Offline
                               </span>
                             )}
                           </div>

@@ -1,11 +1,12 @@
 import EndpointCard from "../EndpointCard";
 
-export default function ProxyViewer({ open, onToggle }) {
+export default function ProxyViewer({ open, onToggle, ...props }) {
   return (
     <EndpointCard
       id="proxy-viewer"
       open={open}
       onToggle={onToggle}
+      {...props}
       method="GET"
       path="/api/proxy-viewer?domain=example.com&target=192.0.2.1"
       title="VirtualHost Proxy & Pre-DNS Preview"

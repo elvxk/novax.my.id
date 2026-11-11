@@ -1,11 +1,12 @@
 import EndpointCard from "../EndpointCard";
 
-export default function LicenseCheck({ open, onToggle }) {
+export default function LicenseCheck({ open, onToggle, ...props }) {
   return (
     <EndpointCard
       id="license-check"
       open={open}
       onToggle={onToggle}
+      {...props}
       method="GET"
       path="/api/license-check?ip=8.8.8.8"
       title="Hosting & OS License Verification"

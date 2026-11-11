@@ -1,11 +1,12 @@
 import EndpointCard from "../EndpointCard";
 
-export default function SmtpSender({ open, onToggle }) {
+export default function SmtpSender({ open, onToggle, ...props }) {
   return (
     <EndpointCard
       id="smtp-sender"
       open={open}
       onToggle={onToggle}
+      {...props}
       method="POST"
       path="/api/smtp-sender"
       title="SMTP Delivery Verification"

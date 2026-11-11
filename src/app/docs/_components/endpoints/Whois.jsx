@@ -1,11 +1,12 @@
 import EndpointCard from "../EndpointCard";
 
-export default function Whois({ open, onToggle }) {
+export default function Whois({ open, onToggle, ...props }) {
   return (
     <EndpointCard
       id="whois"
       open={open}
       onToggle={onToggle}
+      {...props}
       method="GET"
       path="/api/whois?domain=example.com"
       title="WHOIS / RDAP Domain Registration"

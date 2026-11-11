@@ -7,85 +7,28 @@ import {
   Lock,
   Network,
 } from "lucide-react";
+import { TOOL_DEFINITIONS, getToolByPath } from "./tool-registry";
 
-export const TOOLS = [
-  {
-    id: "dns-lookup",
-    name: "DNS Lookup",
-    label: "DNS Lookup",
-    desc: "Inspect DNS records (A, AAAA, MX, NS, TXT, CNAME, SOA), reverse DNS PTR, and domain registration WHOIS / RDAP.",
-    icon: Globe,
-    href: "/tools/dns-lookup",
-    live: true,
-    featured: true,
-    tags: ["DNS", "WHOIS", "RDAP", "PTR"],
-  },
-  {
-    id: "ip-geo",
-    name: "IP Geolocation",
-    label: "IP Geolocation",
-    desc: "Lookup country, city, ASN, ISP details, and geographic coordinates for any IPv4 or IPv6 address.",
-    icon: MapPin,
-    href: "/tools/ip-geo",
-    live: true,
-    featured: true,
-    tags: ["GeoIP", "ASN", "ISP"],
-  },
-  {
-    id: "proxy-viewer",
-    name: "Proxy Viewer",
-    label: "Proxy Viewer",
-    desc: "Preview websites on specific server IPs or staging hostnames before changing public DNS records.",
-    icon: Shield,
-    href: "/tools/proxy-viewer",
-    live: true,
-    featured: true,
-    tags: ["DNS Preview", "Manual Resolver", "Resolver"],
-  },
-  {
-    id: "license-check",
-    name: "License Checker",
-    label: "License Check",
-    desc: "Verify cPanel, CloudLinux, Imunify, and JetBackup license registrations from any IP address.",
-    icon: Key,
-    href: "/tools/license-check",
-    live: true,
-    featured: true,
-    tags: ["cPanel", "CloudLinux", "Imunify", "JetBackup"],
-  },
-  {
-    id: "smtp-sender",
-    name: "SMTP Sender",
-    label: "SMTP Sender",
-    desc: "Verify outbound email delivery through any SMTP server with custom credentials and encryption settings.",
-    icon: Mail,
-    href: "/tools/smtp-sender",
-    live: true,
-    featured: true,
-    tags: ["SMTP", "Email", "Deliverability", "SSL", "TLS"],
-  },
-  {
-    id: "ssl-checker",
-    name: "SSL Checker",
-    label: "SSL Checker",
-    desc: "Inspect and validate SSL/TLS certificates — expiry, domain match, issuer, SANs, and fingerprints.",
-    icon: Lock,
-    href: "/tools/ssl-checker",
-    live: true,
-    featured: true,
-    tags: ["SSL", "TLS", "Certificate", "HTTPS"],
-  },
-  {
-    id: "subdomain-finder",
-    name: "Subdomain Finder",
-    label: "Subdomain Finder",
-    desc: "Enumerate subdomains of any root domain via DNS brute-force against a common wordlist.",
-    icon: Network,
-    href: "/tools/subdomain-finder",
-    live: true,
-    featured: true,
-    tags: ["DNS", "Subdomain", "Enumeration", "Recon"],
-  },
-];
+export { getToolByPath };
 
-export const FEATURED_TOOLS = TOOLS.filter((t) => t.featured);
+const ICON_MAP = {
+  Globe,
+  MapPin,
+  Shield,
+  Key,
+  Mail,
+  Lock,
+  Network,
+};
+
+// Map definitions to components with icons
+export const ALL_TOOLS = TOOL_DEFINITIONS.map((tool) => ({
+  ...tool,
+  icon: ICON_MAP[tool.iconName] || Globe,
+}));
+
+// Filter out tools that are completely disabled/hidden
+export const TOOLS = ALL_TOOLS.filter((t) => !t.disabled);
+
+// Featured tools shown on homepage hero section (must be live and not disabled)
+export const FEATURED_TOOLS = TOOLS.filter((t) => t.featured && t.live);

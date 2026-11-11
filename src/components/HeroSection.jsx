@@ -158,30 +158,19 @@ export default function HeroSection() {
         >
           {FEATURED_TOOLS.map((t) => {
             const Icon = t.icon;
-            const PillWrapper = t.live ? "a" : "div";
 
             return (
-              <PillWrapper
+              <a
                 key={t.id}
-                href={t.live ? t.href : undefined}
-                className={[
-                  "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-150 select-none whitespace-nowrap",
-                  t.live
-                    ? "bg-parchment border border-ink text-ink hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_#10380b] cursor-pointer"
-                    : "bg-parchment/60 border border-ink/20 text-ink/40 cursor-not-allowed",
-                ].join(" ")}
+                href={t.href}
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-150 select-none whitespace-nowrap bg-parchment border border-ink text-ink hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_#10380b] cursor-pointer"
               >
-                <span
-                  className={[
-                    "w-5 h-5 rounded-full flex items-center justify-center shrink-0",
-                    t.live ? "bg-marigold text-ink" : "bg-ink/10 text-ink/40",
-                  ].join(" ")}
-                >
+                <span className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 bg-marigold text-ink">
                   <Icon size={11} strokeWidth={2.4} />
                 </span>
                 <span>{t.label || t.name}</span>
-                {t.live && <span className="w-1.5 h-1.5 rounded-full bg-fern" />}
-              </PillWrapper>
+                <span className="w-1.5 h-1.5 rounded-full bg-fern" />
+              </a>
             );
           })}
         </motion.div>

@@ -1,11 +1,12 @@
 import EndpointCard from "../EndpointCard";
 
-export default function IpGeo({ open, onToggle }) {
+export default function IpGeo({ open, onToggle, ...props }) {
   return (
     <EndpointCard
       id="ip-geo"
       open={open}
       onToggle={onToggle}
+      {...props}
       method="GET"
       path="/api/ip-geo?ip=8.8.8.8"
       title="IP Geolocation & Network Routing"
