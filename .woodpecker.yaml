@@ -42,8 +42,7 @@ steps:
         # Buat file env dari secret
         - printf "%s" "$ENV_FILE" > .env
 
-        - bun install --frozen-lockfile
-        - bun run prisma:generate
+        - bun install
         - bun run build
 
         # Restart pm2

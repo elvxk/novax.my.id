@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
-import { ArrowRight, FileCode2, Globe } from "lucide-react";
-import { FEATURED_TOOLS, ICON_MAP } from "@/lib/tools";
+import { ArrowRight, FileCode2 } from "lucide-react";
+import { FEATURED_TOOLS } from "@/lib/tools";
 
 /** Returns smoothed x/y transforms for a parallax layer with independent axis factors. */
 function useParallax(factorX = 10, factorY = 10, spring = { stiffness: 60, damping: 20 }) {
@@ -76,26 +76,6 @@ function PingChip({ label, top, left, right, delay = 0 }) {
 }
 
 export default function HeroSection() {
-  const [featuredList, setFeaturedList] = useState(FEATURED_TOOLS);
-
-  // Sync with PostgreSQL database
-  useEffect(() => {
-    fetch("/api/tools")
-      .then((r) => r.json())
-      .then((json) => {
-        if (json.success && Array.isArray(json.data)) {
-          const featured = json.data
-            .filter((t) => t.featured && t.live && !t.disabled)
-            .map((t) => ({
-              ...t,
-              icon: ICON_MAP[t.iconName] || Globe,
-            }));
-          setFeaturedList(featured);
-        }
-      })
-      .catch(() => {});
-  }, []);
-
   // corner networks: strong horizontal, moderate vertical, sluggish spring
   const deco = useParallax(-28, -16, { stiffness: 45, damping: 18 });
   // ping chips: unequal axes so each chip feels independent, snappier
@@ -176,7 +156,7 @@ export default function HeroSection() {
           transition={{ duration: 0.45, delay: 0.24 }}
           className="w-full max-w-6xl flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 mb-10"
         >
-          {featuredList.map((t) => {
+          {FEATURED_TOOLS.map((t) => {
             const Icon = t.icon;
 
             return (

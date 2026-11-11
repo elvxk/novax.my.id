@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -11,11 +11,10 @@ import {
   Lock,
   AlertTriangle,
   Wrench,
-  Globe,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { TOOLS, ICON_MAP } from "@/lib/tools";
+import { TOOLS } from "@/lib/tools";
 
 const container = {
   hidden: {},
@@ -104,30 +103,11 @@ function ToolCard({ tool }) {
 
 function ToolsCatalogInner() {
   const searchParams = useSearchParams();
-  const [toolList, setToolList] = useState(TOOLS);
-
-  // Sync with PostgreSQL database
-  useEffect(() => {
-    fetch("/api/tools")
-      .then((r) => r.json())
-      .then((json) => {
-        if (json.success && Array.isArray(json.data)) {
-          setToolList(
-            json.data.map((t) => ({
-              ...t,
-              icon: ICON_MAP[t.iconName] || Globe,
-            }))
-          );
-        }
-      })
-      .catch(() => {});
-  }, []);
-
   const maintenanceId = searchParams.get("maintenance");
-  const maintenanceTool = maintenanceId ? toolList.find((t) => t.id === maintenanceId) : null;
+  const maintenanceTool = maintenanceId ? TOOLS.find((t) => t.id === maintenanceId) : null;
 
-  const activeTools = toolList.filter((t) => t.live);
-  const maintenanceTools = toolList.filter((t) => !t.live);
+  const activeTools = TOOLS.filter((t) => t.live);
+  const maintenanceTools = TOOLS.filter((t) => !t.live);
 
   return (
     <main className="min-h-screen flex flex-col">
