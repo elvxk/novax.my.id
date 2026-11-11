@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -32,19 +32,18 @@ import SmtpSender from "./_components/endpoints/SmtpSender";
 import ProxyViewer from "./_components/endpoints/ProxyViewer";
 import SslChecker from "./_components/endpoints/SslChecker";
 import SubdomainFinder from "./_components/endpoints/SubdomainFinder";
-import { TOOL_DEFINITIONS } from "@/lib/tool-registry";
 
 // ── sidebar config ────────────────────────────────────────────────────────────
 
 const RAW_ENDPOINTS = [
-  { id: "dns-lookup",       title: "DNS Lookup",         icon: Globe,   method: "GET",  toolId: "dns-lookup" },
-  { id: "whois",            title: "WHOIS / RDAP",       icon: Globe,   method: "GET",  toolId: "dns-lookup" },
-  { id: "ip-geo",           title: "IP Geolocation",     icon: MapPin,  method: "GET",  toolId: "ip-geo" },
-  { id: "license-check",    title: "License Check",      icon: Key,     method: "GET",  toolId: "license-check" },
-  { id: "smtp-sender",      title: "SMTP Sender",        icon: Mail,    method: "POST", toolId: "smtp-sender" },
-  { id: "proxy-viewer",     title: "Proxy Viewer",       icon: Eye,     method: "GET",  toolId: "proxy-viewer" },
-  { id: "ssl-checker",      title: "SSL Checker",        icon: Lock,    method: "GET",  toolId: "ssl-checker" },
-  { id: "subdomain-finder", title: "Subdomain Finder",   icon: Network, method: "GET",  toolId: "subdomain-finder" },
+  { id: "dns-lookup",       title: "DNS Lookup",         icon: Globe,    method: "GET",  toolId: "dns-lookup",       live: true },
+  { id: "whois",            title: "WHOIS / RDAP",       icon: Globe,    method: "GET",  toolId: "dns-lookup",       live: true },
+  { id: "ip-geo",           title: "IP Geolocation",     icon: MapPin,   method: "GET",  toolId: "ip-geo",           live: true },
+  { id: "license-check",    title: "License Check",      icon: Key,      method: "GET",  toolId: "license-check",    live: true },
+  { id: "smtp-sender",      title: "SMTP Sender",        icon: Mail,     method: "POST", toolId: "smtp-sender",      live: true },
+  { id: "proxy-viewer",     title: "Proxy Viewer",       icon: Eye,      method: "GET",  toolId: "proxy-viewer",     live: true },
+  { id: "ssl-checker",      title: "SSL Checker",        icon: Lock,     method: "GET",  toolId: "ssl-checker",      live: true },
+  { id: "subdomain-finder", title: "Subdomain Finder",   icon: Network,  method: "GET",  toolId: "subdomain-finder", live: true },
 ];
 
 const ENDPOINT_COMPONENTS = {
@@ -58,43 +57,6 @@ const ENDPOINT_COMPONENTS = {
   "subdomain-finder": SubdomainFinder,
 };
 
-// Filter out disabled endpoints and attach live status
-const VISIBLE_ENDPOINTS = RAW_ENDPOINTS.filter((ep) => {
-  const tool = TOOL_DEFINITIONS.find((t) => t.id === ep.toolId);
-  return !tool || !tool.disabled;
-}).map((ep) => {
-  const tool = TOOL_DEFINITIONS.find((t) => t.id === ep.toolId);
-  return {
-    ...ep,
-    live: tool ? tool.live : true,
-  };
-});
-
-const LIVE_ENDPOINTS = VISIBLE_ENDPOINTS.filter((ep) => ep.live);
-const MAINTENANCE_ENDPOINTS = VISIBLE_ENDPOINTS.filter((ep) => !ep.live);
-
-const NAV = [
-  {
-    label: "Overview",
-    items: [
-      { id: "envelope", title: "Response Envelope", icon: BookOpen },
-      { id: "rate-limit", title: "Rate Limiting", icon: Shield },
-    ],
-  },
-  {
-    label: "Endpoints",
-    items: LIVE_ENDPOINTS,
-  },
-  ...(MAINTENANCE_ENDPOINTS.length > 0
-    ? [
-        {
-          label: "Maintenance",
-          items: MAINTENANCE_ENDPOINTS,
-        },
-      ]
-    : []),
-];
-
 const METHOD_BADGE = {
   GET:  "bg-fern/20 text-fern border-fern/30",
   POST: "bg-marigold/60 text-ink border-marigold",
@@ -106,10 +68,10 @@ function scrollTo(id) {
 
 // ── sidebar ───────────────────────────────────────────────────────────────────
 
-function Sidebar({ activeId, onSelect }) {
+function Sidebar({ nav, activeId, onSelect }) {
   return (
     <nav className="space-y-6">
-      {NAV.map((group) => (
+      {nav.map((group) => (
         <div key={group.label}>
           <p className="text-[10px] font-black uppercase tracking-widest text-ink/40 mb-2 px-1">
             {group.label}
@@ -158,12 +120,84 @@ export default function ApiDocsPage() {
   const [activeId, setActiveId] = useState("envelope");
   const [openId, setOpenId] = useState(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [toolDefs, setToolDefs] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Sync endpoint statuses dynamically with PostgreSQL database
+  useEffect(() => {
+    fetch("/api/tools?all=true")
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.success && Array.isArray(json.data)) {
+          setToolDefs(json.data);
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        setIsLoaded(true);
+      });
+  }, []);
+
+  // Compute endpoints based on live database status (disabled tools are completely excluded)
+  const visibleEndpoints = useMemo(() => {
+    // Before database response, use baseline endpoints without flicker
+    if (!isLoaded || toolDefs.length === 0) {
+      return RAW_ENDPOINTS;
+    }
+
+    return RAW_ENDPOINTS.filter((ep) => {
+      const tool = toolDefs.find((t) => t.id === ep.toolId);
+      // Tool must exist in database and must NOT be disabled
+      return tool && !tool.disabled;
+    }).map((ep) => {
+      const tool = toolDefs.find((t) => t.id === ep.toolId);
+      return {
+        ...ep,
+        live: tool ? tool.live : true,
+      };
+    });
+  }, [isLoaded, toolDefs]);
+
+  const liveEndpoints = useMemo(
+    () => visibleEndpoints.filter((ep) => ep.live),
+    [visibleEndpoints]
+  );
+
+  // Only compute maintenance group after database has loaded (prevents flash of maintenance group)
+  const maintenanceEndpoints = useMemo(
+    () => (isLoaded ? visibleEndpoints.filter((ep) => !ep.live) : []),
+    [isLoaded, visibleEndpoints]
+  );
+
+  const nav = useMemo(
+    () => [
+      {
+        label: "Overview",
+        items: [
+          { id: "envelope", title: "Response Envelope", icon: BookOpen },
+          { id: "rate-limit", title: "Rate Limiting", icon: Shield },
+        ],
+      },
+      {
+        label: "Endpoints",
+        items: liveEndpoints,
+      },
+      ...(maintenanceEndpoints.length > 0
+        ? [
+            {
+              label: "Maintenance",
+              items: maintenanceEndpoints,
+            },
+          ]
+        : []),
+    ],
+    [liveEndpoints, maintenanceEndpoints]
+  );
 
   function handleSelect(id) {
     setActiveId(id);
     setMobileNavOpen(false);
-    // only toggle endpoints (not overview sections)
-    const isEndpoint = NAV.some(
+    const isEndpoint = nav.some(
       (g) => g.label !== "Overview" && g.items.some((i) => i.id === id)
     );
     if (isEndpoint) setOpenId((prev) => (prev === id ? null : id));
@@ -208,7 +242,7 @@ export default function ApiDocsPage() {
         {/* Mobile sidebar drawer */}
         {mobileNavOpen && (
           <div className="lg:hidden border-t border-ink/10 bg-cream/95 px-4 py-4">
-            <Sidebar activeId={activeId} onSelect={handleSelect} />
+            <Sidebar nav={nav} activeId={activeId} onSelect={handleSelect} />
           </div>
         )}
       </div>
@@ -219,7 +253,7 @@ export default function ApiDocsPage() {
           {/* Desktop sidebar — sticky */}
           <aside className="hidden lg:block w-52 shrink-0">
             <div className="sticky top-[108px]">
-              <Sidebar activeId={activeId} onSelect={handleSelect} />
+              <Sidebar nav={nav} activeId={activeId} onSelect={handleSelect} />
             </div>
           </aside>
 
@@ -258,14 +292,14 @@ export default function ApiDocsPage() {
             </section>
 
             {/* Live Endpoints */}
-            {LIVE_ENDPOINTS.length > 0 && (
+            {liveEndpoints.length > 0 && (
               <section className="mb-12">
                 <div className="mb-6 flex items-center gap-2">
                   <Terminal size={18} className="text-ink" />
                   <h2 className="text-2xl font-black text-ink tracking-tight">Available Endpoints</h2>
                 </div>
 
-                {LIVE_ENDPOINTS.map((ep) => {
+                {liveEndpoints.map((ep) => {
                   const Comp = ENDPOINT_COMPONENTS[ep.id];
                   if (!Comp) return null;
                   return (
@@ -281,7 +315,7 @@ export default function ApiDocsPage() {
             )}
 
             {/* Maintenance Endpoints */}
-            {MAINTENANCE_ENDPOINTS.length > 0 && (
+            {maintenanceEndpoints.length > 0 && (
               <section id="maintenance-endpoints" className="mb-10">
                 <div className="mb-4 flex items-center gap-2">
                   <AlertTriangle size={18} className="text-ink" />
@@ -297,7 +331,7 @@ export default function ApiDocsPage() {
                   </div>
                 </div>
 
-                {MAINTENANCE_ENDPOINTS.map((ep) => {
+                {maintenanceEndpoints.map((ep) => {
                   const Comp = ENDPOINT_COMPONENTS[ep.id];
                   if (!Comp) return null;
                   return (
