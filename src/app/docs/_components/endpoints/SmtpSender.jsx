@@ -12,7 +12,7 @@ export default function SmtpSender({ open, onToggle, ...props }) {
       title="SMTP Delivery Verification"
       desc="Connects to any SMTP server with the supplied credentials and sends a verification email. Supports SSL/TLS, STARTTLS, and plaintext. Returns server response, accepted/rejected addresses, message ID, and round-trip time."
       params={[
-        { name: "host", type: "string", required: true, desc: "SMTP server hostname (e.g. smtp.gmail.com)." },
+        { name: "host", type: "string", required: true, desc: "SMTP server hostname (e.g. smtp.example.com)." },
         { name: "port", type: "number", required: true, desc: "SMTP port. Common: 25, 465 (SSL), 587 (STARTTLS), 2525." },
         { name: "user", type: "string", required: true, desc: "SMTP username — typically the sender email address." },
         { name: "pass", type: "string", required: true, desc: "SMTP password or app-specific password." },
@@ -26,11 +26,11 @@ export default function SmtpSender({ open, onToggle, ...props }) {
       curlExample={`curl -s -X POST 'https://novax.my.id/api/smtp-sender' \\
   -H 'Content-Type: application/json' \\
   -d '{
-    "host": "smtp.gmail.com",
+    "host": "smtp.example.com",
     "port": 587,
-    "user": "sender@gmail.com",
+    "user": "sender@example.com",
     "pass": "app-password",
-    "to": "recipient@domain.com",
+    "to": "recipient@example.com",
     "encryption": "tls",
     "format": "html"
   }'`}
@@ -38,11 +38,11 @@ export default function SmtpSender({ open, onToggle, ...props }) {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    host: "smtp.gmail.com",
+    host: "smtp.example.com",
     port: 587,
-    user: "sender@gmail.com",
+    user: "sender@example.com",
     pass: "app-password",
-    to: "recipient@domain.com",
+    to: "recipient@example.com",
     encryption: "tls",
     format: "html",
   }),
@@ -52,10 +52,10 @@ console.log(data);`}
       jsonResponse={`{
   "success": true,
   "data": {
-    "accepted": ["recipient@domain.com"],
+    "accepted": ["recipient@example.com"],
     "rejected": [],
-    "messageId": "<abc123@smtp.gmail.com>",
-    "response": "250 2.0.0 OK  1731000000 — gsmtp",
+    "messageId": "<abc123@smtp.example.com>",
+    "response": "250 2.0.0 OK",
     "elapsedMs": 834
   }
 }`}

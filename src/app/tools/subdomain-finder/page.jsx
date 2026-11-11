@@ -385,7 +385,7 @@ function SubdomainFinderInner() {
                   type="text"
                   value={domain}
                   onChange={(e) => setDomain(e.target.value)}
-                  placeholder="pradipta.dev or example.com"
+                  placeholder="example.com"
                   disabled={scanning}
                   required
                   className="w-full bg-cream border border-ink/20 rounded-xl px-4 py-2.5 font-mono font-semibold text-sm text-ink placeholder:text-ink/30 outline-none focus:border-ink focus:shadow-[3px_3px_0px_0px_#10380b] transition-all disabled:opacity-50"

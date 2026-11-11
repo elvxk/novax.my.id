@@ -1,13 +1,8 @@
-/**
- * Nova-X Tool Configuration & Registry
- * Central single source of truth for tool states.
- *
- * Flags:
- * - live: boolean (false = under maintenance / offline. API returns 503, UI shows Maintenance)
- * - disabled: boolean (true = completely hidden from catalog, search, docs, and returns 404)
- */
+import { PrismaClient } from "@prisma/client";
 
-export const TOOL_DEFINITIONS = [
+const prisma = new PrismaClient();
+
+const INITIAL_TOOLS = [
   {
     id: "dns-lookup",
     name: "DNS Lookup",
@@ -29,7 +24,7 @@ export const TOOL_DEFINITIONS = [
     iconName: "MapPin",
     href: "/tools/ip-geo",
     apiEndpoints: ["/api/ip-geo"],
-    live: false,
+    live: true,
     disabled: false,
     featured: true,
     tags: ["GeoIP", "ASN", "ISP"],
@@ -81,7 +76,7 @@ export const TOOL_DEFINITIONS = [
     iconName: "Lock",
     href: "/tools/ssl-checker",
     apiEndpoints: ["/api/ssl-checker"],
-    live: false,
+    live: true,
     disabled: false,
     featured: true,
     tags: ["SSL", "TLS", "Certificate", "HTTPS"],
@@ -101,25 +96,52 @@ export const TOOL_DEFINITIONS = [
   },
 ];
 
-/**
- * Fast lookup helper for middleware / proxy guard
- */
-export function getToolByPath(pathname) {
-  if (!pathname) return null;
+async function main() {
+  console.log("🌱 Starting tool database seeding...");
 
-  // Exact matching for /tools/:id
-  if (pathname.startsWith("/tools/")) {
-    const slug = pathname.replace(/^\/tools\//, "").split("/")[0];
-    return TOOL_DEFINITIONS.find((t) => t.id === slug) || null;
+  for (let i = 0; i < INITIAL_TOOLS.length; i++) {
+    const tool = INITIAL_TOOLS[i];
+    await prisma.tool.upsert({
+      where: { id: tool.id },
+      update: {
+        name: tool.name,
+        label: tool.label,
+        desc: tool.desc,
+        iconName: tool.iconName,
+        href: tool.href,
+        apiEndpoints: tool.apiEndpoints,
+        live: tool.live,
+        disabled: tool.disabled,
+        featured: tool.featured,
+        tags: tool.tags,
+        sortOrder: i,
+      },
+      create: {
+        id: tool.id,
+        name: tool.name,
+        label: tool.label,
+        desc: tool.desc,
+        iconName: tool.iconName,
+        href: tool.href,
+        apiEndpoints: tool.apiEndpoints,
+        live: tool.live,
+        disabled: tool.disabled,
+        featured: tool.featured,
+        tags: tool.tags,
+        sortOrder: i,
+      },
+    });
+    console.log(`✓ Seeded tool: ${tool.name} (${tool.id})`);
   }
 
-  // Exact matching for API endpoints
-  if (pathname.startsWith("/api/")) {
-    const endpoint = pathname.split("?")[0];
-    return (
-      TOOL_DEFINITIONS.find((t) => t.apiEndpoints.includes(endpoint)) || null
-    );
-  }
-
-  return null;
+  console.log("✨ Seeding completed successfully!");
 }
+
+main()
+  .catch((e) => {
+    console.error("❌ Seeding failed:", e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
