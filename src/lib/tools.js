@@ -4,6 +4,7 @@ import {
   Shield,
   Key,
   Mail,
+  Lock,
 } from "lucide-react";
 
 export const TOOLS = [
@@ -61,6 +62,17 @@ export const TOOLS = [
     live: true,
     featured: true,
     tags: ["SMTP", "Email", "Deliverability", "SSL", "TLS"],
+  },
+  {
+    id: "ssl-checker",
+    name: "SSL Checker",
+    label: "SSL Checker",
+    desc: "Inspect and validate SSL/TLS certificates — expiry, domain match, issuer, SANs, and fingerprints.",
+    icon: Lock,
+    href: "/tools/ssl-checker",
+    live: true,
+    featured: true,
+    tags: ["SSL", "TLS", "Certificate", "HTTPS"],
   },
 ];
 
