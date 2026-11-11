@@ -168,7 +168,7 @@ function ProxyViewerInner() {
                   id="domain"
                   value={domain}
                   onChange={(e) => setDomain(e.target.value)}
-                  placeholder="example.com"
+                  placeholder="example.com or ecample.com/path"
                   disabled={loading}
                   required
                   className="w-full bg-cream border border-ink/20 rounded-xl px-4 py-2.5 font-mono font-semibold text-sm text-ink placeholder:text-ink/30 outline-none focus:border-ink focus:shadow-[3px_3px_0px_0px_#10380b] transition-all disabled:opacity-50"
@@ -268,11 +268,10 @@ function ProxyViewerInner() {
             >
               {/* DNS Status Banner */}
               <div
-                className={`rounded-2xl border p-4 sm:p-5 shadow-[4px_4px_0px_0px_#10380b] ${
-                  result.isAlreadyLive
-                    ? "bg-marigold/30 border-ink"
-                    : "bg-sage/40 border-ink"
-                }`}
+                className={`rounded-2xl border p-4 sm:p-5 shadow-[4px_4px_0px_0px_#10380b] ${result.isAlreadyLive
+                  ? "bg-marigold/30 border-ink"
+                  : "bg-sage/40 border-ink"
+                  }`}
               >
                 <div className="flex items-start gap-3">
                   {result.isAlreadyLive ? (
@@ -337,11 +336,10 @@ function ProxyViewerInner() {
                     <button
                       type="button"
                       onClick={() => setPreviewWidth("100%")}
-                      className={`p-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all ${
-                        previewWidth === "100%"
-                          ? "bg-ink text-cream"
-                          : "text-ink/60 hover:text-ink"
-                      }`}
+                      className={`p-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all ${previewWidth === "100%"
+                        ? "bg-ink text-cream"
+                        : "text-ink/60 hover:text-ink"
+                        }`}
                       title="Desktop view (100%)"
                     >
                       <Laptop size={14} />
@@ -350,11 +348,10 @@ function ProxyViewerInner() {
                     <button
                       type="button"
                       onClick={() => setPreviewWidth("768px")}
-                      className={`p-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all ${
-                        previewWidth === "768px"
-                          ? "bg-ink text-cream"
-                          : "text-ink/60 hover:text-ink"
-                      }`}
+                      className={`p-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all ${previewWidth === "768px"
+                        ? "bg-ink text-cream"
+                        : "text-ink/60 hover:text-ink"
+                        }`}
                       title="Tablet view (768px)"
                     >
                       <Tablet size={14} />
@@ -363,11 +360,10 @@ function ProxyViewerInner() {
                     <button
                       type="button"
                       onClick={() => setPreviewWidth("375px")}
-                      className={`p-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all ${
-                        previewWidth === "375px"
-                          ? "bg-ink text-cream"
-                          : "text-ink/60 hover:text-ink"
-                      }`}
+                      className={`p-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all ${previewWidth === "375px"
+                        ? "bg-ink text-cream"
+                        : "text-ink/60 hover:text-ink"
+                        }`}
                       title="Mobile view (375px)"
                     >
                       <Smartphone size={14} />
