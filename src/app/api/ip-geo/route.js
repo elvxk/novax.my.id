@@ -4,10 +4,16 @@ import { getClientIp } from "@/lib/rate-limit";
 const IP_API_BASE = process.env.IP_API_URL || "https://ipwho.is";
 
 function isPrivateOrLocal(ip) {
-  if (!ip || ip === "127.0.0.1" || ip === "::1") return true;
-  if (ip.startsWith("10.") || ip.startsWith("192.168.")) return true;
-  if (/^172\.(1[6-9]|2\d|3[0-1])\./.test(ip)) return true;
-  if (ip.startsWith("169.254.") || ip.startsWith("100.64.")) return true;
+  if (!ip) return true;
+  const clean = ip.trim().toLowerCase();
+  if (clean === "127.0.0.1" || clean === "::1" || clean === "localhost") return true;
+  // IPv4 private, CGNAT, loopback, link-local (RFC 1918, RFC 3927, RFC 6598)
+  if (clean.startsWith("10.") || clean.startsWith("192.168.")) return true;
+  if (/^172\.(1[6-9]|2\d|3[0-1])\./.test(clean)) return true;
+  if (clean.startsWith("169.254.") || clean.startsWith("100.64.")) return true;
+  // IPv6 ULA (fc00::/7) and Link-Local (fe80::/10) (RFC 4193, RFC 4291)
+  if (/^(fc|fd)[0-9a-f]{2}:/i.test(clean) || /^fe[89ab][0-9a-f]:/i.test(clean)) return true;
+  if (clean.startsWith("::ffff:127.")) return true;
   return false;
 }
 
