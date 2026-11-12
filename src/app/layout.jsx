@@ -27,6 +27,8 @@ export const metadata = {
     "reverse DNS",
     "IP geolocation",
     "manual resolve",
+    "proxy site",
+    "web proxy",
     "cPanel license check",
     "CloudLinux check",
     "SMTP sender test",
