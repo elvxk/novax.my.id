@@ -30,6 +30,7 @@ import IpGeo from "./_components/endpoints/IpGeo";
 import LicenseCheck from "./_components/endpoints/LicenseCheck";
 import SmtpSender from "./_components/endpoints/SmtpSender";
 import ProxyViewer from "./_components/endpoints/ProxyViewer";
+import CsrGenerator from "./_components/endpoints/CsrGenerator";
 import SslChecker from "./_components/endpoints/SslChecker";
 import SubdomainFinder from "./_components/endpoints/SubdomainFinder";
 import { TOOL_DEFINITIONS } from "@/lib/tool-registry";
@@ -44,6 +45,7 @@ const RAW_ENDPOINTS = [
   { id: "smtp-sender",      title: "SMTP Sender",        icon: Mail,    method: "POST", toolId: "smtp-sender" },
   { id: "proxy-viewer",     title: "Manual Resolve",     icon: Eye,     method: "GET",  toolId: "proxy-viewer" },
   { id: "ssl-checker",      title: "SSL Checker",        icon: Lock,    method: "GET",  toolId: "ssl-checker" },
+  { id: "csr-generator",    title: "CSR Generator",      icon: Key,     method: "POST", toolId: "csr-generator" },
   { id: "subdomain-finder", title: "Subdomain Finder",   icon: Network, method: "GET",  toolId: "subdomain-finder" },
 ];
 
