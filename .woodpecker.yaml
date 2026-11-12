@@ -1,10 +1,19 @@
 when:
-  - event: push
-    branch: main
+  - event: [push, pull_request]
 
 steps:
+  - name: quality-gate
+    image: oven/bun:latest
+    commands:
+      - bun install --frozen-lockfile
+      - bun test
+      - bun run lint
+
   - name: deploy
     image: appleboy/drone-ssh
+    when:
+      - event: push
+        branch: main
     settings:
       host:
         from_secret: vps_host
@@ -42,7 +51,9 @@ steps:
         # Buat file env dari secret
         - printf "%s" "$ENV_FILE" > .env
 
-        - bun install
+        - bun install --frozen-lockfile
+        - bun test
+        - bun run lint
         - bun run build
 
         # Restart pm2
