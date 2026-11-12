@@ -6,6 +6,7 @@ import {
   Mail,
   Lock,
   Network,
+  FileKey,
 } from "lucide-react";
 import { TOOL_DEFINITIONS, getToolByPath } from "./tool-registry";
 
@@ -19,6 +20,7 @@ const ICON_MAP = {
   Mail,
   Lock,
   Network,
+  FileKey,
 };
 
 // Map definitions to components with icons
