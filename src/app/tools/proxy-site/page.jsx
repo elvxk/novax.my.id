@@ -39,11 +39,10 @@ const SAMPLE_SITES = [
 function HeaderBadge({ label, ok }) {
   return (
     <span
-      className={`inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full border uppercase tracking-wider ${
-        ok
+      className={`inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full border uppercase tracking-wider ${ok
           ? "bg-fern/15 text-ink border-fern/40"
           : "bg-ink/5 text-ink/40 border-ink/15"
-      }`}
+        }`}
     >
       <span className={`w-1.5 h-1.5 rounded-full ${ok ? "bg-fern" : "bg-ink/30"}`} />
       {label}
@@ -322,11 +321,10 @@ function ProxySiteInner() {
                   <button
                     type="button"
                     onClick={() => setActiveTab("preview")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-                      activeTab === "preview"
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${activeTab === "preview"
                         ? "bg-ink text-cream shadow-sm"
                         : "text-ink/60 hover:text-ink"
-                    }`}
+                      }`}
                   >
                     <Compass size={13} />
                     <span>Web Preview</span>
@@ -334,11 +332,10 @@ function ProxySiteInner() {
                   <button
                     type="button"
                     onClick={() => setActiveTab("headers")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-                      activeTab === "headers"
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${activeTab === "headers"
                         ? "bg-ink text-cream shadow-sm"
                         : "text-ink/60 hover:text-ink"
-                    }`}
+                      }`}
                   >
                     <FileText size={13} />
                     <span>Headers</span>
@@ -346,11 +343,10 @@ function ProxySiteInner() {
                   <button
                     type="button"
                     onClick={() => setActiveTab("source")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-                      activeTab === "source"
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${activeTab === "source"
                         ? "bg-ink text-cream shadow-sm"
                         : "text-ink/60 hover:text-ink"
-                    }`}
+                      }`}
                   >
                     <Code2 size={13} />
                     <span>HTML Source</span>
@@ -365,11 +361,10 @@ function ProxySiteInner() {
                         <button
                           type="button"
                           onClick={() => setPreviewWidth("100%")}
-                          className={`p-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer ${
-                            previewWidth === "100%"
+                          className={`p-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer ${previewWidth === "100%"
                               ? "bg-ink text-cream"
                               : "text-ink/60 hover:text-ink"
-                          }`}
+                            }`}
                           title="Desktop view (100%)"
                         >
                           <Laptop size={14} />
@@ -378,11 +373,10 @@ function ProxySiteInner() {
                         <button
                           type="button"
                           onClick={() => setPreviewWidth("768px")}
-                          className={`p-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer ${
-                            previewWidth === "768px"
+                          className={`p-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer ${previewWidth === "768px"
                               ? "bg-ink text-cream"
                               : "text-ink/60 hover:text-ink"
-                          }`}
+                            }`}
                           title="Tablet view (768px)"
                         >
                           <Tablet size={14} />
@@ -391,11 +385,10 @@ function ProxySiteInner() {
                         <button
                           type="button"
                           onClick={() => setPreviewWidth("375px")}
-                          className={`p-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer ${
-                            previewWidth === "375px"
+                          className={`p-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer ${previewWidth === "375px"
                               ? "bg-ink text-cream"
                               : "text-ink/60 hover:text-ink"
-                          }`}
+                            }`}
                           title="Mobile view (375px)"
                         >
                           <Smartphone size={14} />
@@ -439,7 +432,7 @@ function ProxySiteInner() {
 
               {/* ── TAB 1: INTERACTIVE WEB PREVIEW (SAME PAGE IFRAME) ── */}
               {activeTab === "preview" && (
-                <div className="w-full flex flex-col items-center bg-cream/60 rounded-2xl p-2 sm:p-3 border border-ink shadow-[4px_4px_0px_0px_#10380b]">
+                <div className="w-full flex flex-col items-center bg-white rounded-2xl p-2 sm:p-3 border border-ink shadow-[4px_4px_0px_0px_#10380b]">
                   {/* Browser Mockup Chrome Bar */}
                   <div className="w-full flex items-center gap-2 pb-2 px-2 border-b border-ink/10 mb-2">
                     <div className="flex gap-1.5">
