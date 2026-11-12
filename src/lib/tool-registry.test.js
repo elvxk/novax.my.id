@@ -19,6 +19,10 @@ describe("tool-registry", () => {
     expect(dnsTool).not.toBeNull();
     expect(dnsTool?.id).toBe("dns-lookup");
 
+    const proxySiteTool = getToolByPath("/tools/proxy-site");
+    expect(proxySiteTool).not.toBeNull();
+    expect(proxySiteTool?.id).toBe("proxy-site");
+
     const unknownTool = getToolByPath("/tools/non-existent-tool");
     expect(unknownTool).toBeNull();
   });
@@ -27,6 +31,10 @@ describe("tool-registry", () => {
     const geoApi = getToolByPath("/api/ip-geo");
     expect(geoApi).not.toBeNull();
     expect(geoApi?.id).toBe("ip-geo");
+
+    const proxySiteApi = getToolByPath("/api/proxy-site");
+    expect(proxySiteApi).not.toBeNull();
+    expect(proxySiteApi?.id).toBe("proxy-site");
 
     const whoisApi = getToolByPath("/api/whois");
     expect(whoisApi).not.toBeNull();
