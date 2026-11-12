@@ -57,6 +57,7 @@ const ENDPOINT_COMPONENTS = {
   "smtp-sender": SmtpSender,
   "proxy-viewer": ProxyViewer,
   "ssl-checker": SslChecker,
+  "csr-generator": CsrGenerator,
   "subdomain-finder": SubdomainFinder,
 };
 
