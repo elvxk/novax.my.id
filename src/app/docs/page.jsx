@@ -42,7 +42,7 @@ const RAW_ENDPOINTS = [
   { id: "ip-geo",           title: "IP Geolocation",     icon: MapPin,  method: "GET",  toolId: "ip-geo" },
   { id: "license-check",    title: "License Check",      icon: Key,     method: "GET",  toolId: "license-check" },
   { id: "smtp-sender",      title: "SMTP Sender",        icon: Mail,    method: "POST", toolId: "smtp-sender" },
-  { id: "proxy-viewer",     title: "Proxy Viewer",       icon: Eye,     method: "GET",  toolId: "proxy-viewer" },
+  { id: "proxy-viewer",     title: "Manual Resolve",     icon: Eye,     method: "GET",  toolId: "proxy-viewer" },
   { id: "ssl-checker",      title: "SSL Checker",        icon: Lock,    method: "GET",  toolId: "ssl-checker" },
   { id: "subdomain-finder", title: "Subdomain Finder",   icon: Network, method: "GET",  toolId: "subdomain-finder" },
 ];
