@@ -44,6 +44,13 @@ function isExpiringSoon(iso) {
   if (!iso) return false;
   return new Date(iso) - Date.now() < 30 * 24 * 60 * 60 * 1000;
 }
+function getExpiryStatus(iso) {
+  if (!iso) return { label: null, isExpired: false, isExpiringSoon: false };
+  const diff = new Date(iso) - Date.now();
+  if (diff < 0) return { label: "Expired", isExpired: true, isExpiringSoon: false };
+  if (diff < 30 * 24 * 60 * 60 * 1000) return { label: "Expiring Soon", isExpired: false, isExpiringSoon: true };
+  return { label: null, isExpired: false, isExpiringSoon: false };
+}
 function ttlLabel(s) {
   if (s >= 3600) return `${s / 3600}h`;
   if (s >= 60) return `${Math.round(s / 60)}m`;
@@ -52,32 +59,45 @@ function ttlLabel(s) {
 
 // ── WhoisCard ────────────────────────────────────────────────────────────────
 
-function WhoisRow({ label, value, highlight, wide }) {
+function WhoisRow({ label, value, highlight, wide, badge }) {
   return (
     <div className={`flex flex-col gap-1 ${wide ? "md:col-span-2" : ""}`}>
       <span className="text-[10px] font-bold uppercase tracking-widest text-ink/40">
         {label}
       </span>
-      <span
-        className={`break-all text-sm font-semibold ${
-          highlight ? "text-red-600" : "text-ink"
-        }`}
-      >
-        {value || "—"}
-      </span>
+      <div className="flex items-center gap-2 flex-wrap">
+        <span
+          className={`break-all text-sm font-semibold ${
+            highlight ? "text-red-600" : "text-ink"
+          }`}
+        >
+          {value || "—"}
+        </span>
+        {badge && (
+          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-300">
+            {badge}
+          </span>
+        )}
+      </div>
     </div>
   );
 }
 
 function WhoisCard({ whois }) {
   if (!whois) return null;
+  const expiry = getExpiryStatus(whois.events?.expiration);
+
   return (
     <div className="rounded-2xl border border-ink bg-parchment p-5 shadow-[4px_4px_0px_0px_#10380b]">
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center justify-between gap-2 mb-4">
         <span className="font-black text-xs uppercase tracking-widest text-ink/50">
           WHOIS / RDAP
         </span>
-        <div className="flex-1 h-px bg-ink/10" />
+        {expiry.isExpired && (
+          <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-red-100 text-red-800 border border-red-400 shadow-[1px_1px_0px_0px_#991b1b]">
+            Registration Expired
+          </span>
+        )}
       </div>
       <div className="grid gap-3 md:grid-cols-2">
         <WhoisRow label="Domain"       value={whois.domain} />
@@ -88,7 +108,8 @@ function WhoisCard({ whois }) {
         <WhoisRow
           label="Expires"
           value={fmtDate(whois.events?.expiration)}
-          highlight={isExpiringSoon(whois.events?.expiration)}
+          highlight={expiry.isExpired || expiry.isExpiringSoon}
+          badge={expiry.label}
         />
         <WhoisRow label="Last Changed" value={fmtDate(whois.events?.lastChanged)} />
         {whois.nameservers?.length > 0 && (
@@ -100,14 +121,21 @@ function WhoisCard({ whois }) {
         )}
         {whois.status?.length > 0 && (
           <div className="md:col-span-2 flex flex-wrap gap-1.5 pt-1">
-            {whois.status.map((s) => (
-              <span
-                key={s}
-                className="text-[10px] font-bold bg-sage text-ink px-2.5 py-0.5 rounded-full border border-ink/20 uppercase tracking-wide"
-              >
-                {s}
-              </span>
-            ))}
+            {whois.status.map((s) => {
+              const isWarning = /hold|prohibited|redemption|pending|renew/i.test(s);
+              return (
+                <span
+                  key={s}
+                  className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border uppercase tracking-wide ${
+                    isWarning
+                      ? "bg-amber-100 text-amber-900 border-amber-300"
+                      : "bg-sage text-ink border-ink/20"
+                  }`}
+                >
+                  {s}
+                </span>
+              );
+            })}
           </div>
         )}
       </div>
@@ -241,14 +269,14 @@ function DNSLookupInner() {
       setWhois(parsedWhois);
 
       const valid = allResults.filter(
-        (r) => r.data.Status === 0 && r.data.Answer
+        (r) => r.data && r.data.Status === 0 && Array.isArray(r.data.Answer) && r.data.Answer.length > 0
       );
 
-      if (valid.length === 0) {
-        setError("No DNS records found for this domain.");
-      } else {
-        setResults(valid);
+      setResults(valid);
 
+      if (valid.length === 0 && !parsedWhois) {
+        setError("No DNS records or WHOIS registration data found for this domain.");
+      } else if (valid.length > 0) {
         // collect IPs for PTR lookup
         const ips = new Set();
         valid.forEach(({ type, data }) => {
@@ -392,7 +420,7 @@ function DNSLookupInner() {
 
         {/* results */}
         <AnimatePresence>
-          {results && (
+          {queried && !loading && (results !== null || whois !== null) && !error && (
             <motion.div
               key="results"
               initial={{ opacity: 0, y: 10 }}
@@ -407,16 +435,26 @@ function DNSLookupInner() {
                 </span>
                 <span className="text-xs text-ink/40 font-semibold">
                   {totalRecords} record{totalRecords !== 1 ? "s" : ""} across{" "}
-                  {results.length} type{results.length !== 1 ? "s" : ""}
+                  {results?.length ?? 0} type{results?.length !== 1 ? "s" : ""}
                 </span>
                 <button
                   onClick={() => doLookup(queried)}
-                  className="ml-auto flex items-center gap-1.5 text-xs font-bold text-ink/40 hover:text-ink transition-colors"
+                  className="ml-auto flex items-center gap-1.5 text-xs font-bold text-ink/40 hover:text-ink transition-colors cursor-pointer"
                 >
                   <RotateCcw size={11} />
                   Refresh
                 </button>
               </div>
+
+              {/* Informational banner when domain has no active DNS records (e.g. expired or suspended) */}
+              {results?.length === 0 && (
+                <div className="flex items-start gap-3 bg-amber-50 border border-amber-300 rounded-xl px-4 py-3 text-amber-900 shadow-[2px_2px_0px_0px_#d97706]">
+                  <AlertCircle size={16} className="shrink-0 mt-0.5 text-amber-700" />
+                  <div className="text-xs sm:text-sm font-medium leading-relaxed">
+                    <span className="font-bold">No active DNS records found.</span> This domain may be expired, suspended by its registrar, or lacks active DNS zone records. WHOIS registration records are displayed below.
+                  </div>
+                </div>
+              )}
 
               {/* whois */}
               <WhoisCard whois={whois} />
@@ -425,17 +463,19 @@ function DNSLookupInner() {
               <PtrCard ptrResults={ptrResults} />
 
               {/* DNS record grid */}
-              <div className="grid gap-4 md:grid-cols-2">
-                {results.map(({ type, data }) => (
-                  <RecordCard key={type} type={type} answers={data.Answer} />
-                ))}
-              </div>
+              {results && results.length > 0 && (
+                <div className="grid gap-4 md:grid-cols-2">
+                  {results.map(({ type, data }) => (
+                    <RecordCard key={type} type={type} answers={data.Answer} />
+                  ))}
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
 
         {/* empty state */}
-        {!results && !loading && !error && (
+        {!queried && !loading && !error && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
