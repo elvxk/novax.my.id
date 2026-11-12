@@ -36,8 +36,8 @@ export const TOOL_DEFINITIONS = [
   },
   {
     id: "proxy-viewer",
-    name: "Proxy Viewer",
-    label: "Proxy Viewer",
+    name: "Manual Resolve",
+    label: "Manual Resolve",
     desc: "Preview websites on specific server IPs or staging hostnames before changing public DNS records.",
     iconName: "Shield",
     href: "/tools/proxy-viewer",

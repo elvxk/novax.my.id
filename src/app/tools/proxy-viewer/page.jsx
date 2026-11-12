@@ -113,7 +113,7 @@ function ProxyViewerInner() {
               Tools
             </Link>
             <ChevronRight size={11} />
-            <span className="text-ink">Proxy Viewer</span>
+            <span className="text-ink">Manual Resolve</span>
           </div>
           {result && (
             <div className="flex items-center gap-2 text-xs font-mono font-bold text-ink/60 truncate">
@@ -138,7 +138,7 @@ function ProxyViewerInner() {
           </div>
           <div>
             <h1 className="text-3xl font-extrabold text-ink tracking-tight leading-none">
-              Proxy Viewer
+              Manual Resolve
             </h1>
             <p className="text-xs text-ink/40 font-semibold mt-0.5">
               Preview websites with manual DNS resolution to a specific IP or hostname before updating public DNS
