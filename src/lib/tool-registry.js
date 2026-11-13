@@ -122,7 +122,7 @@ export const TOOL_DEFINITIONS = [
     apiEndpoints: ["/api/ssl-generator/challenge", "/api/ssl-generator/issue"],
     live: true,
     disabled: false,
-    featured: false,
+    featured: true,
     tags: ["ACME", "SSL", "TLS", "Certificate", "DNS-01"],
   },
   {
