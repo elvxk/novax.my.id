@@ -40,4 +40,15 @@ describe("tool-registry", () => {
     expect(whoisApi).not.toBeNull();
     expect(whoisApi?.id).toBe("dns-lookup");
   });
+
+  it("resolves a nested API endpoint to its owning tool", () => {
+    expect(getToolByPath("/api/ssl-generator/challenge")?.id).toBe("ssl-generator");
+    expect(getToolByPath("/api/ssl-generator/issue")?.id).toBe("ssl-generator");
+    // Dynamic segments must still resolve to the base endpoint
+    expect(getToolByPath("/api/ssl-generator/issue/0dbadd11-92fe")?.id).toBe("ssl-generator");
+  });
+
+  it("does not match an endpoint that merely shares a name prefix", () => {
+    expect(getToolByPath("/api/ssl-generatorX/challenge")).toBeNull();
+  });
 });

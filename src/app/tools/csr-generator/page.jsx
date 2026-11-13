@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { downloadFile } from "@/lib/download";
 
 function InfoRow({ label, value, mono = false }) {
   return (
@@ -55,17 +56,6 @@ function CopyButton({ text, label = "Copy" }) {
   );
 }
 
-function downloadFile(content, filename) {
-  const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
 
 function CsrGeneratorInner() {
   const router = useRouter();

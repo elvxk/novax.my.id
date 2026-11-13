@@ -20,6 +20,8 @@ import {
   AlertTriangle,
   Menu,
   X,
+  Award,
+  KeyRound,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -34,6 +36,8 @@ import ProxyViewer from "./_components/endpoints/ProxyViewer";
 import ProxySite from "./_components/endpoints/ProxySite";
 import CsrGenerator from "./_components/endpoints/CsrGenerator";
 import SslChecker from "./_components/endpoints/SslChecker";
+import SslGeneratorChallenge from "./_components/endpoints/SslGeneratorChallenge";
+import SslGeneratorIssue from "./_components/endpoints/SslGeneratorIssue";
 import SubdomainFinder from "./_components/endpoints/SubdomainFinder";
 import { TOOL_DEFINITIONS } from "@/lib/tool-registry";
 
@@ -49,6 +53,8 @@ const RAW_ENDPOINTS = [
   { id: "proxy-site",       title: "Proxy Site",         icon: Compass, method: "GET",  toolId: "proxy-site" },
   { id: "ssl-checker",      title: "SSL Checker",        icon: Lock,    method: "GET",  toolId: "ssl-checker" },
   { id: "csr-generator",    title: "CSR Generator",      icon: Key,     method: "POST", toolId: "csr-generator" },
+  { id: "ssl-generator-challenge", title: "SSL Order Challenge", icon: Award, method: "POST", toolId: "ssl-generator" },
+  { id: "ssl-generator-issue", title: "SSL Issue",       icon: KeyRound, method: "POST", toolId: "ssl-generator" },
   { id: "subdomain-finder", title: "Subdomain Finder",   icon: Network, method: "GET",  toolId: "subdomain-finder" },
 ];
 
@@ -62,6 +68,8 @@ const ENDPOINT_COMPONENTS = {
   "proxy-site": ProxySite,
   "ssl-checker": SslChecker,
   "csr-generator": CsrGenerator,
+  "ssl-generator-challenge": SslGeneratorChallenge,
+  "ssl-generator-issue": SslGeneratorIssue,
   "subdomain-finder": SubdomainFinder,
 };
 

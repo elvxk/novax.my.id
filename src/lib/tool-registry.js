@@ -113,6 +113,19 @@ export const TOOL_DEFINITIONS = [
     tags: ["CSR", "SSL", "TLS", "PKI", "Certificate"],
   },
   {
+    id: "ssl-generator",
+    name: "SSL Generator",
+    label: "SSL Generator",
+    desc: "Order an ACME DNS-01 challenge and issue a free trusted SSL/TLS certificate. Returns the TXT record to deploy, then the certificate and private key.",
+    iconName: "Award",
+    href: "/tools/ssl-generator",
+    apiEndpoints: ["/api/ssl-generator/challenge", "/api/ssl-generator/issue"],
+    live: true,
+    disabled: false,
+    featured: false,
+    tags: ["ACME", "SSL", "TLS", "Certificate", "DNS-01"],
+  },
+  {
     id: "subdomain-finder",
     name: "Subdomain Finder",
     label: "Subdomain Finder",
@@ -143,7 +156,11 @@ export function getToolByPath(pathname) {
   if (pathname.startsWith("/api/")) {
     const endpoint = pathname.split("?")[0];
     return (
-      TOOL_DEFINITIONS.find((t) => t.apiEndpoints.includes(endpoint)) || null
+      TOOL_DEFINITIONS.find((t) =>
+        t.apiEndpoints.some(
+          (base) => endpoint === base || endpoint.startsWith(`${base}/`)
+        )
+      ) || null
     );
   }
 
