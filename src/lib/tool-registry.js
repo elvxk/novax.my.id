@@ -138,6 +138,19 @@ export const TOOL_DEFINITIONS = [
     featured: false,
     tags: ["DNS", "Subdomain", "Enumeration", "Recon"],
   },
+  {
+    id: "crawl-test",
+    name: "Crawler Test",
+    label: "Crawl Test",
+    desc: "Test website accessibility for search engine and AI crawlers (Google, Bing, GPTBot, ClaudeBot) via robots.txt, meta tags, and header directives.",
+    iconName: "Bot",
+    href: "/tools/crawl-test",
+    apiEndpoints: ["/api/crawl-test"],
+    live: true,
+    disabled: false,
+    featured: true,
+    tags: ["SEO", "Crawler", "Robots.txt", "Googlebot", "AI Bots"],
+  },
 ];
 
 /**
