@@ -1,66 +1,92 @@
-# Nova-X (`novax.my.id`)
+# Nova-X
 
-Platform utilitas dan diagnostik jaringan, keamanan server, dan sistem web yang dirancang untuk pengembang, administrator sistem, dan peneliti keamanan.
+> Network utilities, server security auditing, and web diagnostic platform.
 
-Aplikasi dapat diakses langsung melalui [novax.my.id](https://novax.my.id).
+[![Runtime](https://img.shields.io/badge/Runtime-Bun-f472b6?style=flat-square&logo=bun)](https://bun.sh)
+[![Framework](https://img.shields.io/badge/Framework-Next.js%2016-black?style=flat-square&logo=next.js)](https://nextjs.org)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 
----
-
-## ⚡ Fitur & Alat
-
-- **DNS Lookup & Reverse DNS (`/tools/dns-lookup`)**: Resolusi rekaman DNS otoritatif (A, AAAA, MX, NS, TXT, CNAME, SOA) via Google DoH serta reverse DNS (PTR).
-- **IP Geolocation (`/tools/ip-geo`)**: Deteksi lokasi geografis, visualisasi peta interaktif Leaflet, informasi ASN, dan perutean ISP untuk alamat IPv4/IPv6.
-- **Proxy Viewer (`/tools/proxy-viewer`)**: Pratinjau VirtualHost pada IP server atau host staging sebelum perubahan DNS publik disebarkan.
-- **License Checker (`/tools/license-check`)**: Audit lisensi server multi-registry untuk cPanel/WHM, CloudLinux OS, Imunify360, dan JetBackup.
-- **SMTP Sender (`/tools/smtp-sender`)**: Verifikasi pengiriman email outbound melalui server SMTP dengan dukungan STARTTLS, SSL/TLS, dan custom template.
-- **WHOIS & RDAP (`/tools/dns-lookup`)**: Pengecekan registrar domain, status lifecycle lock, dan tanggal kedaluwarsa via bootstrap ICANN RDAP.
+Live at **[novax.my.id](https://novax.my.id)** · API Documentation: **[novax.my.id/docs](https://novax.my.id/docs)**
 
 ---
 
-## 🚀 Memulai Proyek
+## Tools
 
-### Prasyarat
+| Tool | Route | Description |
+| :--- | :--- | :--- |
+| **DNS Lookup** | `/tools/dns-lookup` | Authoritative DNS records (A, AAAA, MX, NS, TXT, CNAME, SOA), PTR, and RDAP/WHOIS. |
+| **Bot & Crawler Test** | `/tools/crawl-test` | Test website accessibility for search engine and AI bots (robots.txt, meta, cloaking). |
+| **SSL Checker** | `/tools/ssl-checker` | Inspect TLS certificate chains, expiry dates, SANs, and cipher validity. |
+| **SSL Generator** | `/tools/ssl-generator` | Free trusted SSL certificates via automated ACME DNS-01 challenges. |
+| **CSR Generator** | `/tools/csr-generator` | Generate RSA private keys and Certificate Signing Requests with custom SANs. |
+| **IP Geolocation** | `/tools/ip-geo` | Country, city, ASN, ISP info, and interactive Leaflet map for IPv4/IPv6. |
+| **Proxy Site** | `/tools/proxy-site` | Anonymous web proxy and live sandboxed website preview. |
+| **Manual Resolve** | `/tools/proxy-viewer` | Preview VirtualHosts on specific server IPs before updating public DNS. |
+| **Subdomain Finder** | `/tools/subdomain-finder` | Enumerate active subdomains via high-speed DNS brute-force. |
+| **SMTP Sender** | `/tools/smtp-sender` | Test outbound email delivery with STARTTLS, SSL/TLS, and custom credentials. |
+| **License Check** | `/tools/license-check` | Verify licenses for cPanel, CloudLinux, Imunify360, and JetBackup. |
 
-- [Bun](https://bun.sh) (runtime dan package manager utama)
+---
 
-### Instalasi & Pengembangan
+## Public REST API
 
-1. Clone repositori:
-   ```bash
-   git clone https://github.com/elvxk/novax.git
-   cd novax
-   ```
+All utilities are accessible via unauthenticated, CORS-enabled REST endpoints adhering to IETF RFC 6585 rate limiting (60 req/min).
 
-2. Pasang dependensi:
-   ```bash
-   bun install
-   ```
+```bash
+# Example: Bot crawler accessibility test
+curl -s 'https://novax.my.id/api/crawl-test?url=example.com'
 
-3. Jalankan server lokal:
-   ```bash
-   bun dev
-   ```
+# Example: DNS lookup
+curl -s 'https://novax.my.id/api/dns-lookup?domain=example.com'
+```
 
-4. Akses melalui browser pada [http://localhost:3000](http://localhost:3000).
+Full interactive playground: **[novax.my.id/docs](https://novax.my.id/docs)**
 
-### Build Produksi
+---
+
+## Tech Stack
+
+- **Runtime & Package Manager**: [Bun](https://bun.sh)
+- **Framework**: [Next.js 16](https://nextjs.org) (App Router, Turbopack)
+- **UI & Styling**: React 19, Tailwind CSS 4, Framer Motion, Lucide Icons
+- **Crypto & Network**: Node-Forge (PKI/CSR), Nodemailer, Leaflet
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [Bun](https://bun.sh) (v1.1+)
+
+### Development
+
+```bash
+# Install dependencies
+bun install
+
+# Start development server
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Production Build
 
 ```bash
 bun run build
 bun run start
 ```
 
----
+### Testing & Linting
 
-## 📖 Dokumentasi API
-
-Seluruh alat pada Nova-X dapat diakses secara terprogram melalui REST API publik yang mendukung CORS dan rate limiting standar internasional (IETF RFC 6585).
-
-- **Dokumentasi Lengkap & Playground Interaktif**: [novax.my.id/docs](https://novax.my.id/docs)
-- **Base URL Produksi**: `https://novax.my.id/api`
+```bash
+bun test
+bun run lint
+```
 
 ---
 
-## 📄 Lisensi
+## License
 
-Proyek ini dilisensikan di bawah [MIT License](LICENSE).
+Released under the [MIT License](LICENSE).
