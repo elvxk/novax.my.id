@@ -22,6 +22,7 @@ import {
   X,
   Award,
   KeyRound,
+  Bot,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -39,6 +40,7 @@ import SslChecker from "./_components/endpoints/SslChecker";
 import SslGeneratorChallenge from "./_components/endpoints/SslGeneratorChallenge";
 import SslGeneratorIssue from "./_components/endpoints/SslGeneratorIssue";
 import SubdomainFinder from "./_components/endpoints/SubdomainFinder";
+import CrawlTest from "./_components/endpoints/CrawlTest";
 import { TOOL_DEFINITIONS } from "@/lib/tool-registry";
 
 // ── sidebar config ────────────────────────────────────────────────────────────
@@ -56,6 +58,7 @@ const RAW_ENDPOINTS = [
   { id: "ssl-generator-challenge", title: "SSL Order Challenge", icon: Award, method: "POST", toolId: "ssl-generator" },
   { id: "ssl-generator-issue", title: "SSL Issue",       icon: KeyRound, method: "POST", toolId: "ssl-generator" },
   { id: "subdomain-finder", title: "Subdomain Finder",   icon: Network, method: "GET",  toolId: "subdomain-finder" },
+  { id: "crawl-test",       title: "Bot & Crawler Test", icon: Bot,     method: "GET",  toolId: "crawl-test" },
 ];
 
 const ENDPOINT_COMPONENTS = {
@@ -71,6 +74,7 @@ const ENDPOINT_COMPONENTS = {
   "ssl-generator-challenge": SslGeneratorChallenge,
   "ssl-generator-issue": SslGeneratorIssue,
   "subdomain-finder": SubdomainFinder,
+  "crawl-test": CrawlTest,
 };
 
 // Filter out disabled endpoints and attach live status

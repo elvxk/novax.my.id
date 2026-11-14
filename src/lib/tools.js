@@ -9,6 +9,7 @@ import {
   FileKey,
   Compass,
   Award,
+  Bot,
 } from "lucide-react";
 import { TOOL_DEFINITIONS, getToolByPath } from "./tool-registry";
 
@@ -25,6 +26,7 @@ const ICON_MAP = {
   FileKey,
   Compass,
   Award,
+  Bot,
 };
 
 // Map definitions to components with icons
