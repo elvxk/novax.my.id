@@ -1,9 +1,9 @@
 "use client";
 
-import { Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronRight,
   ArrowRight,
@@ -11,6 +11,10 @@ import {
   Lock,
   AlertTriangle,
   Wrench,
+  Search,
+  Grid,
+  List,
+  X,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -26,9 +30,72 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
 };
 
-function ToolCard({ tool }) {
+function ToolCard({ tool, variant = "grid" }) {
   const Icon = tool.icon;
   const CardWrapper = tool.live ? Link : "div";
+
+  // Limit tags to fit in 1 row: show max 3 tags + "+N" badge
+  const maxTags = 3;
+  const visibleTags = tool.tags.slice(0, maxTags);
+  const remainingTags = tool.tags.length - maxTags;
+
+  // Minimal info for list variant
+  if (variant === "list") {
+    return (
+      <CardWrapper
+        href={tool.live ? tool.href : undefined}
+        className={[
+          "w-full flex flex-row items-center gap-4 rounded-2xl border border-ink p-4 transition-all duration-150 select-none",
+          tool.live
+            ? "bg-parchment shadow-[4px_4px_0px_0px_#10380b] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-novax cursor-pointer group"
+            : "bg-parchment/60 opacity-60 cursor-not-allowed border-ink/30",
+        ].join(" ")}
+      >
+        {/* Icon */}
+        <div className="w-10 h-10 rounded-xl bg-marigold border border-ink/20 flex items-center justify-center text-ink shrink-0 shadow-[2px_2px_0px_0px_#10380b]">
+          <Icon size={18} strokeWidth={2.2} />
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          {/* Title + status */}
+          <div className="flex items-center gap-2">
+            <h3 className="text-sm font-extrabold text-ink tracking-tight truncate">
+              {tool.name}
+            </h3>
+            {tool.live ? (
+              <span className="text-[9px] font-black uppercase tracking-wider bg-fern/20 text-ink border border-fern px-2 py-0.5 rounded-full">
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-fern animate-pulse" />
+                Live
+              </span>
+            ) : (
+              <span className="text-[9px] font-black uppercase tracking-wider bg-ink/10 text-ink/50 px-2 py-0.5 rounded-full border border-ink/15">
+                Maintenance
+              </span>
+            )}
+          </div>
+
+          {/* Minimal description */}
+          <p className="text-[11px] text-ink/60 font-medium leading-snug mt-1 line-clamp-2">
+            {tool.desc}
+          </p>
+
+          {/* Minimal action */}
+          <div className="flex items-center justify-between text-[11px] font-bold text-ink pt-2">
+            <span>{tool.live ? "Open Tool" : "Under Maintenance"}</span>
+            {tool.live ? (
+              <ArrowRight
+                size={12}
+                className="group-hover:translate-x-1 transition-transform"
+              />
+            ) : (
+              <Lock size={10} className="opacity-40" />
+            )}
+          </div>
+        </div>
+      </CardWrapper>
+    );
+  }
 
   return (
     <CardWrapper
@@ -65,23 +132,33 @@ function ToolCard({ tool }) {
           {tool.name}
         </h2>
 
-        {/* Tool Description */}
-        <p className="text-xs sm:text-sm text-ink/70 font-medium leading-relaxed mb-4">
-          {tool.desc}
-        </p>
+        {/* Tool Description - exactly 2 lines with inline "More" */}
+        <div className="mb-4">
+          <p className="text-xs sm:text-sm text-ink/70 font-medium leading-relaxed line-clamp-2 relative pr-14">
+            {tool.desc}
+            <span className="absolute bottom-0 right-0 bg-gradient-to-l from-parchment to-transparent px-2 text-[10px] font-bold text-ink/40">
+              …
+            </span>
+          </p>
+        </div>
       </div>
 
       <div>
-        {/* Tags */}
-        <div className="flex flex-wrap gap-1.5 pt-3 border-t border-ink/10 mb-4">
-          {tool.tags.map((tag) => (
+        {/* Tags - strictly 1 row, no wrap */}
+        <div className="flex gap-1.5 pt-3 border-t border-ink/10 mb-4 overflow-x-auto no-scrollbar">
+          {visibleTags.map((tag) => (
             <span
               key={tag}
-              className="text-[10px] font-mono font-bold text-ink/60 bg-cream border border-ink/15 px-2 py-0.5 rounded-md"
+              className="text-[10px] font-mono font-bold text-ink/60 bg-cream border border-ink/15 px-2 py-0.5 rounded-md whitespace-nowrap shrink-0"
             >
               {tag}
             </span>
           ))}
+          {remainingTags > 0 && (
+            <span className="text-[10px] font-mono font-bold text-ink/50 bg-cream border border-ink/15 px-2 py-0.5 rounded-md shrink-0 whitespace-nowrap">
+              +{remainingTags}
+            </span>
+          )}
         </div>
 
         {/* Action link */}
@@ -106,8 +183,18 @@ function ToolsCatalogInner() {
   const maintenanceId = searchParams.get("maintenance");
   const maintenanceTool = maintenanceId ? TOOLS.find((t) => t.id === maintenanceId) : null;
 
-  const activeTools = TOOLS.filter((t) => t.live);
-  const maintenanceTools = TOOLS.filter((t) => !t.live);
+  const [query, setQuery] = useState("");
+  const [viewMode, setViewMode] = useState("grid");
+
+  const filteredTools = TOOLS.filter(
+    (t) =>
+      t.name.toLowerCase().includes(query.toLowerCase()) ||
+      t.desc.toLowerCase().includes(query.toLowerCase()) ||
+      t.tags.some((tag) => tag.toLowerCase().includes(query.toLowerCase()))
+  );
+
+  const activeTools = filteredTools.filter((t) => t.live);
+  const maintenanceTools = filteredTools.filter((t) => !t.live);
 
   return (
     <main className="min-h-screen flex flex-col">
@@ -130,6 +217,68 @@ function ToolsCatalogInner() {
       </div>
 
       <div className="flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 pt-10 pb-20">
+        {/* Controls: Search & View Mode Toggle */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.1 }}
+          className="mb-8"
+        >
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+            {/* Search Input */}
+            <div className="relative w-full sm:w-72">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search size={14} className="text-ink/40" />
+              </div>
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search tools..."
+                className="w-full bg-parchment border border-ink rounded-xl pl-9 pr-3 py-2.5 text-xs font-mono font-semibold text-ink placeholder:text-ink/30 outline-none focus:shadow-[4px_4px_0px_0px_#10380b] transition-shadow"
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => setQuery("")}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-ink/40 hover:text-ink"
+                >
+                  <X size={12} />
+                </button>
+              )}
+            </div>
+
+            {/* View Mode Toggle */}
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-ink/40">View:</span>
+              <div className="flex gap-1 rounded-xl border border-ink bg-cream p-0.5">
+                <button
+                  type="button"
+                  onClick={() => setViewMode("grid")}
+                  className={`p-1.5 rounded-lg transition-all ${
+                    viewMode === "grid"
+                      ? "bg-ink text-cream shadow-[2px_2px_0px_0px_#10380b]"
+                      : "text-ink/60 hover:text-ink hover:bg-ink/5"
+                  }`}
+                >
+                  <Grid size={14} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode("list")}
+                  className={`p-1.5 rounded-lg transition-all ${
+                    viewMode === "list"
+                      ? "bg-ink text-cream shadow-[2px_2px_0px_0px_#10380b]"
+                      : "text-ink/60 hover:text-ink hover:bg-ink/5"
+                  }`}
+                >
+                  <List size={14} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
         {/* Maintenance notice if redirected */}
         {maintenanceTool && (
           <motion.div
@@ -168,17 +317,38 @@ function ToolsCatalogInner() {
           </motion.div>
 
           <motion.div
-            variants={container}
+            key={viewMode}
+            variants={viewMode === "grid" ? container : {
+              hidden: { opacity: 0 },
+              show: { opacity: 1, transition: { staggerChildren: 0.06 } }
+            }}
             initial="hidden"
             animate="show"
-            className="grid gap-5 md:grid-cols-2 lg:grid-cols-3"
+            exit="hidden"
+            className={
+              viewMode === "grid"
+                ? "grid gap-5 md:grid-cols-2 lg:grid-cols-3"
+                : "space-y-4"
+            }
           >
             {activeTools.map((tool) => (
-              <motion.div key={tool.id} variants={item}>
-                <ToolCard tool={tool} />
-              </motion.div>
+              <AnimatePresence key={tool.id}>
+                <motion.div variants={item}>
+                  <ToolCard tool={tool} variant={viewMode} />
+                </motion.div>
+              </AnimatePresence>
             ))}
           </motion.div>
+
+          {activeTools.length === 0 && query && (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-8 rounded-2xl border border-ink bg-cream/60 text-center"
+            >
+              <span className="text-sm font-bold text-ink/60">No tools match your search.</span>
+            </motion.div>
+          )}
         </section>
 
         {/* Section 2: Under Maintenance / Maintenance Tools */}
@@ -200,7 +370,7 @@ function ToolsCatalogInner() {
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {maintenanceTools.map((tool) => (
                 <div key={tool.id}>
-                  <ToolCard tool={tool} />
+                  <ToolCard tool={tool} variant={viewMode} />
                 </div>
               ))}
             </div>

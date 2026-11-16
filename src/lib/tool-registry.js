@@ -151,6 +151,19 @@ export const TOOL_DEFINITIONS = [
     featured: true,
     tags: ["SEO", "Crawler", "Robots.txt", "Googlebot", "AI Bots"],
   },
+  {
+    id: "http-client",
+    name: "HTTP Client",
+    label: "HTTP Client",
+    desc: "Send HTTP requests to any API endpoint with custom methods, headers, and body. A lightweight Postman-like tool for testing and debugging APIs.",
+    iconName: "Zap",
+    href: "/tools/http-client",
+    apiEndpoints: ["/api/http-client"],
+    live: true,
+    disabled: false,
+    featured: false,
+    tags: ["HTTP", "API", "REST", "Client", "Postman", "Request"],
+  },
 ];
 
 /**

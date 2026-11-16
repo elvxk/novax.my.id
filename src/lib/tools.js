@@ -10,6 +10,7 @@ import {
   Compass,
   Award,
   Bot,
+  Zap,
 } from "lucide-react";
 import { TOOL_DEFINITIONS, getToolByPath } from "./tool-registry";
 
@@ -27,6 +28,7 @@ const ICON_MAP = {
   Compass,
   Award,
   Bot,
+  Zap,
 };
 
 // Map definitions to components with icons

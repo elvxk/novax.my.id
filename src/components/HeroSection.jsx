@@ -199,10 +199,31 @@ export default function HeroSection() {
             </span>
           </motion.a>
 
+          {/* Quick Search Hint */}
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.45 }}
+            className="mt-4 flex items-center gap-2"
+          >
+            <kbd className="hidden sm:inline-block font-mono text-[10px] font-bold bg-parchment border border-ink/20 px-1.5 py-0.5 rounded text-ink/70">
+              ⌘K
+            </kbd>
+            <span className="text-[11px] font-bold text-ink/50">
+              or
+            </span>
+            <kbd className="hidden sm:inline-block font-mono text-[10px] font-bold bg-parchment border border-ink/20 px-1.5 py-0.5 rounded text-ink/70">
+              Ctrl K
+            </kbd>
+            <span className="text-[11px] font-semibold text-ink/50">
+              to quick search
+            </span>
+          </motion.div>
+
           {/* Underneath: API Docs as a subtle text link */}
           <a
             href="/docs"
-            className="group mt-3.5 inline-flex items-center gap-1.5 text-xs font-bold text-ink/60 hover:text-ink transition-colors select-none"
+            className="group mt-5 inline-flex items-center gap-1.5 text-xs font-bold text-ink/60 hover:text-ink transition-colors select-none"
           >
             <FileCode2 size={13} className="text-ink/50 group-hover:text-ink transition-colors" />
             <span className="underline decoration-ink/30 underline-offset-4 group-hover:decoration-ink">
