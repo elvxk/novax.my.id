@@ -40,6 +40,12 @@ export default function Navbar({ maxWidth = "max-w-6xl" }) {
             API Docs
           </Link>
           <Link
+            href="/about"
+            className="text-xs font-bold text-ink/70 hover:text-ink transition-colors px-1.5 py-1"
+          >
+            About
+          </Link>
+          <Link
             href="/tools"
             className="bg-ink text-cream font-bold text-xs px-4 py-2 rounded-full hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-novax transition-all duration-150 shrink-0"
           >
