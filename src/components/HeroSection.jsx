@@ -204,15 +204,15 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.45 }}
-            className="mt-4 flex items-center gap-2"
+            className="mt-4 flex items-center gap-2 flex-wrap"
           >
-            <kbd className="hidden sm:inline-block font-mono text-[10px] font-bold bg-parchment border border-ink/20 px-1.5 py-0.5 rounded text-ink/70">
+            <kbd className="inline-block font-mono text-[10px] font-bold bg-parchment border border-ink/20 px-1.5 py-0.5 rounded text-ink/70">
               ⌘K
             </kbd>
             <span className="text-[11px] font-bold text-ink/50">
               or
             </span>
-            <kbd className="hidden sm:inline-block font-mono text-[10px] font-bold bg-parchment border border-ink/20 px-1.5 py-0.5 rounded text-ink/70">
+            <kbd className="inline-block font-mono text-[10px] font-bold bg-parchment border border-ink/20 px-1.5 py-0.5 rounded text-ink/70">
               Ctrl K
             </kbd>
             <span className="text-[11px] font-semibold text-ink/50">
