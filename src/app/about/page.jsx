@@ -65,10 +65,30 @@ export default function AboutPage() {
   });
   const [status, setStatus] = useState("idle"); // idle | pending | success | error
   const [errorMessage, setErrorMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
+
+  function validate() {
+    const errors = {};
+    if (!feedback.name.trim()) {
+      errors.name = "Name is required";
+    } else if (feedback.name.trim().length < 2) {
+      errors.name = "Name must be at least 2 characters";
+    }
+    if (feedback.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(feedback.email.trim())) {
+      errors.email = "Invalid email format";
+    }
+    if (!feedback.message.trim()) {
+      errors.message = "Message is required";
+    } else if (feedback.message.trim().length < 10) {
+      errors.message = "Message must be at least 10 characters";
+    }
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!feedback.message.trim()) return;
+    if (!validate()) return;
 
     setStatus("pending");
     setErrorMessage("");
@@ -263,18 +283,24 @@ export default function AboutPage() {
                   htmlFor="feedback-name"
                   className="block text-[10px] font-black uppercase tracking-widest text-ink/50 mb-1.5"
                 >
-                  Name <span className="text-ink/30">(optional)</span>
+                  Name <span className="text-ink/30">(required)</span>
                 </label>
                 <input
                   id="feedback-name"
                   type="text"
                   value={feedback.name}
                   onChange={(e) => setFeedback({ ...feedback, name: e.target.value })}
+                  onBlur={() => validate()}
                   disabled={submitting}
                   maxLength={80}
                   placeholder="Your name"
-                  className="w-full bg-cream border border-ink/20 rounded-lg px-3 py-2 text-xs font-mono text-ink placeholder:text-ink/30 outline-none focus:border-ink transition-colors disabled:opacity-50"
+                  className={`w-full bg-cream rounded-lg px-3 py-2 text-xs font-mono text-ink placeholder:text-ink/30 outline-none focus:border-ink transition-colors disabled:opacity-50 ${
+                    fieldErrors.name ? "border-red-500" : "border-ink/20"
+                  }`}
                 />
+                {fieldErrors.name && (
+                  <span className="block text-[10px] font-medium text-red-600 mt-1">{fieldErrors.name}</span>
+                )}
               </div>
 
               <div>
@@ -289,11 +315,17 @@ export default function AboutPage() {
                   type="email"
                   value={feedback.email}
                   onChange={(e) => setFeedback({ ...feedback, email: e.target.value })}
+                  onBlur={() => validate()}
                   disabled={submitting}
                   maxLength={160}
                   placeholder="you@example.com"
-                  className="w-full bg-cream border border-ink/20 rounded-lg px-3 py-2 text-xs font-mono text-ink placeholder:text-ink/30 outline-none focus:border-ink transition-colors disabled:opacity-50"
+                  className={`w-full bg-cream rounded-lg px-3 py-2 text-xs font-mono text-ink placeholder:text-ink/30 outline-none focus:border-ink transition-colors disabled:opacity-50 ${
+                    fieldErrors.email ? "border-red-500" : "border-ink/20"
+                  }`}
                 />
+                {fieldErrors.email && (
+                  <span className="block text-[10px] font-medium text-red-600 mt-1">{fieldErrors.email}</span>
+                )}
               </div>
 
               <div className="sm:col-span-2">
@@ -307,12 +339,18 @@ export default function AboutPage() {
                   id="feedback-message"
                   value={feedback.message}
                   onChange={(e) => setFeedback({ ...feedback, message: e.target.value })}
+                  onBlur={() => validate()}
                   disabled={submitting}
                   rows={5}
                   maxLength={2000}
                   placeholder="Describe the issue, idea, or tool you'd like to see…"
-                  className="w-full bg-cream border border-ink/20 rounded-lg px-3 py-2 text-xs font-mono text-ink placeholder:text-ink/30 outline-none focus:border-ink transition-colors resize-y disabled:opacity-50"
+                  className={`w-full bg-cream rounded-lg px-3 py-2 text-xs font-mono text-ink placeholder:text-ink/30 outline-none focus:border-ink transition-colors resize-y disabled:opacity-50 ${
+                    fieldErrors.message ? "border-red-500" : "border-ink/20"
+                  }`}
                 />
+                {fieldErrors.message && (
+                  <span className="block text-[10px] font-medium text-red-600 mt-1">{fieldErrors.message}</span>
+                )}
                 <span className="block text-right text-[10px] font-mono text-ink/30 mt-1">
                   {feedback.message.length}/2000
                 </span>
