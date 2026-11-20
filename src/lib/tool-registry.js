@@ -164,6 +164,19 @@ export const TOOL_DEFINITIONS = [
     featured: false,
     tags: ["HTTP", "API", "REST", "Client", "Postman", "Request"],
   },
+  {
+    id: "html-to-pdf",
+    name: "HTML to PDF",
+    label: "HTML to PDF",
+    desc: "Convert HTML markup or web pages to PDF documents using headless Chrome. Supports custom page formats, margins, orientation, CSS @page rules, and full print/media emulation.",
+    iconName: "FileText",
+    href: "/tools/html-to-pdf",
+    apiEndpoints: ["/api/html-to-pdf"],
+    live: true,
+    disabled: false,
+    featured: false,
+    tags: ["PDF", "HTML", "Converter", "Puppeteer", "Document"],
+  },
 ];
 
 /**
