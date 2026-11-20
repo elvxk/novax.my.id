@@ -24,6 +24,7 @@ import {
   KeyRound,
   Bot,
   Zap,
+  FileText,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -43,6 +44,7 @@ import SslGeneratorIssue from "./_components/endpoints/SslGeneratorIssue";
 import SubdomainFinder from "./_components/endpoints/SubdomainFinder";
 import CrawlTest from "./_components/endpoints/CrawlTest";
 import HttpClient from "./_components/endpoints/HttpClient";
+import HtmlToPdf from "./_components/endpoints/HtmlToPdf";
 import { TOOL_DEFINITIONS } from "@/lib/tool-registry";
 
 // ── sidebar config ────────────────────────────────────────────────────────────
@@ -62,6 +64,7 @@ const RAW_ENDPOINTS = [
   { id: "subdomain-finder", title: "Subdomain Finder",   icon: Network, method: "GET",  toolId: "subdomain-finder" },
   { id: "crawl-test",       title: "Bot & Crawler Test", icon: Bot,     method: "GET",  toolId: "crawl-test" },
   { id: "http-client",      title: "HTTP Client",        icon: Zap,     method: "POST", toolId: "http-client" },
+  { id: "html-to-pdf",      title: "HTML to PDF",        icon: FileText, method: "POST", toolId: "html-to-pdf" },
 ];
 
 const ENDPOINT_COMPONENTS = {
@@ -79,6 +82,7 @@ const ENDPOINT_COMPONENTS = {
   "subdomain-finder": SubdomainFinder,
   "crawl-test": CrawlTest,
   "http-client": HttpClient,
+  "html-to-pdf": HtmlToPdf,
 };
 
 // Filter out disabled endpoints and attach live status

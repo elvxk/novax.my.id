@@ -11,6 +11,7 @@ import {
   Award,
   Bot,
   Zap,
+  FileText,
 } from "lucide-react";
 import { TOOL_DEFINITIONS, getToolByPath } from "./tool-registry";
 
@@ -29,6 +30,7 @@ const ICON_MAP = {
   Award,
   Bot,
   Zap,
+  FileText,
 };
 
 // Map definitions to components with icons
